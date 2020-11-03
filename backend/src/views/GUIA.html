@@ -1,0 +1,167 @@
+<!DOCTYPE html5>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Compilador</title>
+    <link rel="stylesheet" href="./../public/css/codemirror.css">
+    <link rel="stylesheet" href="./../public/css/DuoTone-Light.css">
+    <link rel="stylesheet" href="./../public/css/dracula.css">
+    <link rel="stylesheet" href="./../public/css/bootstrap.css">
+    <link rel="stylesheet" href="./../public/css/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Slabo+27px&display=swap" rel="stylesheet">
+    <link href= https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css  rel="stylesheet">
+
+    <!-- PARA EL ARBOL ATS EN HTML :v -->
+    <style>
+        html { margin:0; padding:0; font-size:62.5%; }
+        body { max-width:800px; min-width:300px; margin:0 auto; padding:20px 10px; font-size:14px; font-size:1.4em; }
+        h1 { font-size:1.8em; }
+        .demo { overflow:auto; border:1px solid silver; min-height:100px; }
+        </style>
+    <link rel="stylesheet" href="./dist/themes/default/style.min.css" />
+    <!-- PARA EL ARBOL ATS EN HTML :v -->
+
+</head>
+
+<body style="background-color: rgb(0, 0, 0);">
+    <center>
+        <h1 style="color: beige;">EJEMPLO</h1>
+    </center>
+    <center>
+        <button class="btn btn-success w-50" onclick="ejecutar()">PROBAR  <i class="fa fa-check-square" aria-hidden="true"></i></button>
+    </center>
+    <!-- CON ESTE FORM MANDO A HACER LA PETICION POST  , SOLO ES DE COLOCAR LA RUTA EN EL ACTION -->
+    <form method="post" action="/ejemplo" id="form">
+        <div style="display: flex; width: 1000px; margin: auto;">
+            <div style="width: 55%; margin-right: 20px;">
+                <h3 style="color: beige;">Input:</h3>
+                    <textarea id="entrada" name="entrada"></textarea>
+            </div>
+        </div>
+    </form>
+
+
+
+    <!--
+        TRADUCTOR
+    -->
+
+
+    <div style="display: flex; width: 1000px; margin: auto;">
+        <div style="width: 55%; margin-right: 20px;">
+            <h3 style="color: beige;">TRADUCCION</h3>
+                <textarea id="tr" name="tr"></textarea>
+        </div>
+    </div>
+
+
+  <!-- ATS -->
+
+    <div class="card" style="width: auto; color:black">
+        <div class="card-body">
+          <h1 class="card-title">ATS REPORT</h1>
+          <div id="html" class="demo">
+              <ul>
+                  <li data-jstree='{ "opened" : true }'>Raiz
+                      <ul>
+                          <li data-jstree='{ "opened" : true }'>Lista Espresion
+                          <ul>
+                              <li data-jstree='{ "opened" : true }'>Expresion
+                              <ul>
+                                  <li data-jstree='{ "opened" : true }'>Aritmetica
+                                      <ul>
+                                  <li>Primitivo</li>
+                                  <li>Primitivo</li>
+                              </ul>
+                                  </li>
+                              </ul>
+                              </li>
+                          </ul>
+                          </li>
+                      </ul>
+                      <ul>
+                          <li data-jstree='{ "opened" : true }'>Lista Instruccion
+                          <ul>
+                              <li data-jstree='{ "opened" : true }'>Instruccion
+                              <ul>
+                                  <li data-jstree='{ "opened" : true }'>Imprimir
+                                      <ul>
+                                          <li data-jstree='{ "opened" : true }'>Lista Espresion
+                                          <ul>
+                                              <li data-jstree='{ "opened" : true }'>Expresion
+                                              <ul>
+                                                  <li data-jstree='{ "opened" : true }'>Aritmetica
+                                                      <ul>
+                                                  <li>Primitivo</li>
+                                                  <li>Primitivo</li>
+                                              </ul>
+                                                  </li>
+                                              </ul>
+                                              </li>
+                                          </ul>
+                                          </li>
+                                      </ul>
+                                  </li>
+                              </ul>
+                              </li>
+                          </ul>
+                          </li>
+                      </ul>
+                  </li>
+              </ul>
+          </div>
+
+        </div>
+      </div>
+ <!-- ATS-->
+
+</body>
+
+
+
+<!--NECESARIO PARA EL ARBOL -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="./dist/jstree.min.js"></script>
+<script>
+$('#html').jstree();
+</script>
+<!--NECESARIO PARA EL ARBOL -->
+
+
+
+
+<script src="./../public/js/codemirror.js"></script>
+<script src="./../public/js/Jquery.js"></script>
+<script src="./../public/js/bootstrap.js"></script>
+<script src="./../public/Mode/javascript/javascript.js"></script>
+<script src="./../public/Mode/pascal/pascal.js"></script>
+<script>
+    function ejecutar() {
+        document.getElementById('form').submit();
+    }
+    const editor = CodeMirror.fromTextArea(entrada, {
+        lineNumbers: true,
+        mode: "javascript",
+        theme: "DuoTone-Light"
+    });
+
+    editor.setSize(500, 300);
+
+    const trad_editor = CodeMirror.fromTextArea(tr, {
+        lineNumbers: true,
+        mode: "javascript",
+        theme: "dracula"
+    });
+
+    trad_editor.setSize(500, 300);
+
+
+
+</script>
+
+
+
+</html>

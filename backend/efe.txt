@@ -1,0 +1,11 @@
+kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk<html ><head><title>Reporte </title>    </head><body class="MIfondo">
+<div align="center"  class="MIfondo"> 
+<h1 class = "tituloTb">Reporte de Errores de Compilacion</h1>
+<table border="2" align="center" class="tabl">
+<tr>
+<th>TIPO DE ERROR</th><th>DESCRIPCION</th><th>LINEA</th>
+</tr>
+</table>
+</div>
+</body>
+</html>
