@@ -19,8 +19,10 @@ this.EXP=EXP;
 
 }
 traductor(){
-this.cadena+=this.ID+" "+"="+this.EXP.execute.toString();
-Traduccion.add(this.cadena);
+  var cadenaT=""
+  cadenaT+=this.ID+" "+"="+this.EXP.execute();
+Traduccion.add(cadenaT);
+return cadenaT;
 }
 execute(){
     

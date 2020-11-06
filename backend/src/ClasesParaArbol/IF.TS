@@ -18,27 +18,30 @@ this.Else=Else;
 
 }
 execute(){
-  this.cadena+="if"+"("+this.Condition.execute.toString();")";
-  this.cadena+="{";
+
+  var T=""
+  T+="if"+"("+this.Condition.execute()+")";
+  T+="{";
   for(let i = 0 ; i < this.Instrucciones.length ; i++){
-    this.cadena += this.Instrucciones[i].execute.toString();
+    T += this.Instrucciones[i].execute();
   }
   if(this.Else.length>1){
   
   
-    this.cadena+="else"+"{"
+    T+="else"+"{"
     for(let i = 0 ; i < this.Else.length ; i++){
-      this.cadena += this.Else[i].execute.toString();
-  this.cadena+="}"
+      T += this.Else[i].execute();
+  T+="}"
     }
   
   
   }
   
   
-  this.cadena+="}"
+  T+="}"
   
-    Traduccion.add(this.cadena);
+    Traduccion.add(T);
+    return T;
 }
 traduccion(){
   

@@ -23,8 +23,12 @@ traduccion(){
     
   }
 execute(){
-    this.cadena+=this.EXP1.execute.toString()+" "+this.Simbolo+this.EXP2.execute.toString();
- Traduccion.add(this.cadena);
+
+
+  var T="";
+    T+=this.EXP1.execute()+" "+this.Simbolo+this.EXP2.execute();
+ Traduccion.add(T);
+ return T;
   
 }
 

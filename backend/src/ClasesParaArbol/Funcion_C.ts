@@ -3,7 +3,7 @@ import {Node} from '../Abstract/Node';
 import {Type,types } from '../ClasesParaArbol/Tipo';
 
 import { Traduccion } from '../ManejoErrores/Traduccion';
-export class Function_C extends Node {
+export class Funcion_C extends Node {
        Tipo:String;
     Nombre: String;
     M_I :Node
@@ -22,11 +22,13 @@ traduccion(){
 
 }
 execute(){
-
-    this.cadena+="function"+"  "+this.Nombre+"(";
-    this.cadena+=this.M_I.execute.toString();
-
-    Traduccion.add(this.cadena)    
+var cadenaT="";
+    cadenaT+="function"+"  "+this.Nombre+"  ";
+    cadenaT+=this.M_I.execute();
+    cadenaT+="{"
+    Traduccion.add(cadenaT) 
+    
+    return cadenaT;
 }
 
 

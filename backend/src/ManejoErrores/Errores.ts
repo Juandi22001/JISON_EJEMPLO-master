@@ -1,57 +1,64 @@
+import { createQualifiedName } from "typescript";
 import { NodoError } from "./NodoError";
-
-class Errores extends Array<NodoError>{
-
-    constructor(){
-        super();
-    }
-
-    public static add(err:NodoError){
-        this.prototype.push(err);
-    }
-
-    public static verificarerror():string{
-        if(this.prototype.length>0){
-            return "Se Detectaron Errores de Compilacion";
-        }
-        return "Compilacion Sin Errores";
-    }
-    
-    public static hay_errores():boolean{
-        if(this.prototype.length>0){
-            return true ; 
-        }
-        return false;
-    }
-
-    public static geterror():string{
-        var cad:string="-";
-           cad+="<html ><head><title>Reporte </title>    </head>" 
-            cad+="<body class=\"MIfondo\">\n";
-                cad+="<div align=\"center\"  class=\"MIfondo\"> \n";
-                    cad+="<h1 class = \"tituloTb\">Reporte de Errores de Compilacion</h1>\n";
-                    cad+="<table border=\"2\" align=\"center\" class=\"tabl\">\n";
-                        cad+="<tr>\n";
-                            cad+="<th>TIPO DE ERROR</th><th>DESCRIPCION</th><th>LINEA</th>\n";
-                        cad+="</tr>\n";
-                        for(var i=0; i<this.prototype.length;i++){
-                            cad+="<tr>\n";
-                                cad+="<td>"+this.prototype[i].gettipo()+"</td><td>"+
-                                "  "+this.prototype[i].getdescripcion()+"  </td><td>"+
-                                this.prototype[i].getlinea()+"</td>\n";
-                            cad+="</tr>\n";
-                        }
-                    cad+="</table>\n";
-                cad+="</div>\n";
-            cad+="</body>\n";
-            cad+="</html>\n";
-        return cad;
-    }
-
-    public static clear(){
-        while(this.prototype.length>0){
-            this.prototype.pop();
-        }
-    }
+import fs = require('fs'); 
+import { Tooltip } from "../public/js/bootstrap";
+export class Errores{
+ Lista: any=[]
+ help:string
+ public static aux:string="";
+constructor(err:string,Lexema:string,linea:number,columna:number){
+  this.agregar(err,Lexema,linea,columna);
+ 
 }
-export{Errores};
+public  grafo(ayuda:string):string{
+
+    var cadena=ayuda;
+   Errores.aux+=ayuda;
+     this.help=ayuda;
+return cadena;
+}
+
+public  agregar(err:string,Lexema:string,linea:number,columna:number){
+    var cadena="";
+    
+    this.Lista.push(new NodoError(err,Lexema,linea,columna));
+
+   
+    for(const aux of this.Lista){
+      Errores.aux+="<td>\n";
+          Errores.aux+=aux.getdescripcion()+"</td><td>"+
+            "  "+aux.gettipo()+"  </td><td>"+
+            aux. getlinea()+"</td>\n";
+      Errores.aux+="</tr>\n";
+    }
+   
+   
+   
+   
+
+   
+    return cadena;
+   
+}
+public static REPORTE():string{
+
+  var grafo=""
+
+grafo+="<html ><head><title>Reporte de Errores Lexicos /Sintacticos </title>    </head>" 
+grafo+="<body class=\"MIfondo\">\n";
+    grafo+="<div align=\"center\"  class=\"MIfondo\"> \n";
+        grafo+="<h1 class = \"tituloTb\">Reporte deErroress </h1>\n";
+        grafo+="<table border=\"2\" align=\"center\" class=\"tabl\">\n";
+            grafo+="<tr>\n";
+                grafo+="<th>Error</th>  <th>Tipo</th><th>Fila</th>\n";
+            grafo+="</tr>\n";
+               grafo+=Errores.aux
+        grafo+="</table>\n";
+    grafo+="</div>\n";
+grafo+="</body>\n";
+grafo+="</html>\n";
+
+  return grafo;
+  
+}
+}    

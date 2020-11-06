@@ -4,11 +4,13 @@ export class NodoError {
     private tipo:string;
     private descripcion:string;
     private linea:number;
-
-    constructor(tipo:string,descripcion:string,linea:number){
+    private columna:number
+    constructor(tipo:string,descripcion:string,linea:number,columna:number){
         this.tipo=tipo;
         this.descripcion=descripcion;
         this.linea=(linea);
+         this.columna=columna
+    
     }
 
     public gettipo():string{

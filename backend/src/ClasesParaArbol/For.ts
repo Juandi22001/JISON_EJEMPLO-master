@@ -21,14 +21,17 @@ traduccion(){
 
 }
 execute(){
-  this.cadena+="for" +"("+this.Declaracion.execute.toString();+";";
-  this.cadena+=this.EXP.execute.toString();+";"
-  this.cadena+=this.Increment_Decrement.execute.toString()+";";+")"+" {"
+
+  var T="";
+  T+="for" +"("+this.Declaracion.execute();+";";
+  T+=this.EXP.execute();+";"
+  T+=this.Increment_Decrement.execute()+";";+")"+" {"
   for(let i = 0 ; i < this.Instruccion.length ; i++){
-    this.cadena += this.Instruccion[i].execute.toString();
+    T += this.Instruccion[i].execute();
   }
-  this.cadena+="}"
-  Traduccion.add(this.cadena);
+  T+="}"
+  Traduccion.add(T);
+  return T;
   
       
 }

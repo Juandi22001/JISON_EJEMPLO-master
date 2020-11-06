@@ -24,11 +24,13 @@ traduccion(){
 
 }
 execute():any{
-    this.cadena="var";
+    var cadenaT=""
+    cadenaT="var"+" ";
 
-    this.cadena+=this.Nombre+"= "+" "+"{";
-    this.cadena+=this.M_I.execute.toString();
-    Traduccion.add(this.cadena); 
+    cadenaT+=this.Nombre+" "+"= "+" " ;
+    cadenaT+=this.M_I.execute();
+    Traduccion.add(cadenaT); 
+    return cadenaT;
 }
 
 

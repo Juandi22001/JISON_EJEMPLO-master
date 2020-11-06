@@ -24,6 +24,8 @@ execute(){
     this.cadena+=this.Instruccion_Vacias.execute.toString();
     this.Exp_Case.execute.toString;
 
+    
+
 }
 
 

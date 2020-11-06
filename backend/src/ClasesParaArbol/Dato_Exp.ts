@@ -17,13 +17,12 @@ this.Tipo = Tipo;
 this.valor=valor;
 
 }
-traduccion(){
 
-
-}
 execute(){
-    this.cadena+=this.valor.toString();
-Traduccion.add(this.cadena)
+  var cadenaAux=""
+   cadenaAux+=this.valor;
+Traduccion.add(cadenaAux)
+return cadenaAux;
 }
 
 

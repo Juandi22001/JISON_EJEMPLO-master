@@ -19,9 +19,14 @@ traduccion(){
 
   
 }
-execute(){this.cadena+=this.ID+""+this.Simbolo;
+execute(){
+  
+  
+  var T="";
+  T+=this.ID+""+this.Simbolo;
 
-Traduccion.add(this.cadena);
+Traduccion.add(T);
+return T;
     
 }
 

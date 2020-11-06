@@ -2,7 +2,7 @@
   const {Arbol} = require('../Simbols/Arbol');
    const {Class} =require ('../ClasesParaArbol/Class')
    const {Interface} =require ('../ClasesParaArbol/Interface')
-   const {FuncionInterface}= require('../ClasesParaArbol/FuncionInterface')
+   const {FunctionInterface}= require('../ClasesParaArbol/FuncionInterface')
    const {Metodo_FuncionIN} =require('../ClasesParaArbol/MetodoOFuncion_Interface')
    const {Metodo_C} =require('../ClasesParaArbol/Metodo_C')
    const {Funcion_C} =require('../ClasesParaArbol/Funcion_C')
@@ -37,17 +37,20 @@
       const {Parametro}=require('../ClasesParaArbol/Parametro') 
       const {Continues}=require('../ClasesParaArbol/Continue') 
       const {TipoV}=require('../ClasesParaArbol/TipoV') 
-      const{Errores}=require('../ManejoErrores/Errores');
-         const{NodoError}=require('../ManejoErrores/NodoError');
          let CErrores=require('../ManejoErrores/Errores');
     let CNodoError=require('../ManejoErrores/NodoError');
+    
+         const{Errores} =require('../ManejoErrores/Errores');
+
+         const{Token} =require('../ManejoErrores/Token');
+
 %}
 
 %lex
 %options case-sensitive
 no  ([\"]*)
-digito [0-9]+
-decimal {digito}("."{digito})?
+entero [0-9]+
+decimal {entero}("."{entero})?
 stringliteral (\"[^"]*\")
 id ([a-zA-Z_])[a-zA-Z0-9_]*
 caracter (\'[^☼]\')
@@ -55,75 +58,79 @@ caracter (\'[^☼]\')
 %%
 \s+ // cualquier cosa xd
              
-"/""/".*                             
-[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/] 
+"/""/".*                             //efe
+[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/] //efe
 
 
-{caracter}            return 'caracter'
+{caracter}         {$$= new Token(yytext,"char ", yylloc.first_column,yylloc.first_line); return 'caracter' }
 
-{decimal}             return 'decimal'
-{entero}              return 'entero' 
-":"                   return ':'
-"/"                   return '/'
-";"                   return ';'
-"--"                  return 'decremento'
-"-"                   return '-'
-"++"                  return 'incremento'
-"+"                   return '+'
-"*"                   return '*'
-"^"                   return '^'
-"%"                   return '%'
-"."                   return '.' 
-"<="                  return '<='
-">="                  return '>=' ;
-"<"                   return '<'
-">"                   return '>'
-"=="                  return '=='
-"!="                  return '!='
-"||"                  return '||'
-"&&"                  return '&&'
-"!"                   return '!'
-"="                   return '='
-","                   return ','
-"("                   return '('
-")"                   return ')'
-"{"                   return '{'
-"}"                   return '}'
-"public"              return  'public'
-"static"              return 'static'
-"main"                return 'main'
-"println"             return 'println'
-"print"               return 'print'
-"out"                 return 'out' 
-"System"              return 'System'
-"void"                return 'void'
-"args"                return  'args'
-"return"              return 'return'
-"if"                  return 'if'
-"else"                return 'else'
+{decimal}             {$$= new Token(yytext,"decimal ", yylloc.first_column,yylloc.first_line); return 'decimal' }
+{entero}           {$$= new Token(yytext,"entero ", yylloc.first_column,yylloc.first_line); return 'entero' }
+":"                    {$$= new Token(":","dos puntos ", yylloc.first_column,yylloc.first_line); return ':' }
+"/"                {$$= new Token("/","barra ", yylloc.first_column,yylloc.first_line); return '/' }
+";"                  {$$= new Token(";","punto y coma ", yylloc.first_column,yylloc.first_line); return ';' }
+"--"                   {$$= new Token("--","decremento ", yylloc.first_column,yylloc.first_line); return 'decremento' }
+"-"                   {$$= new Token("-","menos", yylloc.first_column,yylloc.first_line); return '-' }
+"++"                {$$= new Token("++","plus plus ", yylloc.first_column,yylloc.first_line); return 'incremento' }
+"+"                 {$$= new Token("+","mas  ", yylloc.first_column,yylloc.first_line); return '+' }
+"*"                   {$$= new Token("*","asterisco ", yylloc.first_column,yylloc.first_line); return '*' }
+"^"                    {$$= new Token("^","elevado ", yylloc.first_column,yylloc.first_line); return '^' }
+"%"                   {$$= new Token("%","porcentaje ", yylloc.first_column,yylloc.first_line); return '%' }
+"."                    {$$= new Token(".","punto", yylloc.first_column,yylloc.first_line); return '.' }
+"<="                   {$$= new Token("<=","menor igual ", yylloc.first_column,yylloc.first_line); return '<=' }
+">="                 {$$= new Token(">=","mayor igual ", yylloc.first_column,yylloc.first_line); return '>=' }
+"<"                    {$$= new Token("<","menor ", yylloc.first_column,yylloc.first_line); return '<' }
+">"                  {$$= new Token(">","mayor ", yylloc.first_column,yylloc.first_line); return ' >' }
+"=="                   {$$= new Token("==","doble igual ", yylloc.first_column,yylloc.first_line); return '==' }
+"!="                   {$$= new Token("!=","diferente ", yylloc.first_column,yylloc.first_line); return '!=' }
+
+"||"                   {$$= new Token("||","O ", yylloc.first_column,yylloc.first_line); return '||' }
+"&&"                   {$$= new Token("&&","Y ", yylloc.first_column,yylloc.first_line); return '&&' }
+"!"                    {$$= new Token("!","admiracion ", yylloc.first_column,yylloc.first_line); return '!' }
+
+"="                   {$$= new Token("="," igual ", yylloc.first_column,yylloc.first_line); return '=' }
+
+","                    {$$= new Token(",","coma", yylloc.first_column,yylloc.first_line); return ',' }
+
+"("                    {$$= new Token("(" , "parentesis abierto", yylloc.first_column,yylloc.first_line); return '(' }
+
+")"                     {$$= new Token(")","parentesis cerrado", yylloc.first_column,yylloc.first_line); return ')' }
+"{"                     {$$= new Token("{","Llave abierta", yylloc.first_column,yylloc.first_line); return '{' }
+"}"                     {$$= new Token("}",  "llave cerrada", yylloc.first_column,yylloc.first_line); return '}' }
+"public"                {$$= new Token("public","palabra reservada public", yylloc.first_column,yylloc.first_line); return 'public' }
+"static"             {$$= new Token("static","palabra reservada static", yylloc.first_column,yylloc.first_line); return 'static' }
+"main"                   {$$= new Token("main","palabra reservada main", yylloc.first_column,yylloc.first_line); return 'main' }
+"println"              {$$= new Token("println","palabra reservada println", yylloc.first_column,yylloc.first_line); return 'println' }
+"print"               {$$= new Token("print","palabra reservada print", yylloc.first_column,yylloc.first_line); return 'print' }
+"out"               {$$= new Token("out","palabra reservada out", yylloc.first_column,yylloc.first_line); return 'out' } 
+"System"              {$$= new Token("System","palabra reservada System", yylloc.first_column,yylloc.first_line); return 'System' }
+"void"                {$$= new Token("void","palabra reservada void", yylloc.first_column,yylloc.first_line); return 'void' }
+"args"              {$$= new Token("args","palabra reservada args", yylloc.first_column,yylloc.first_line); return 'args' }
+"return"            {$$= new Token("return","palabra reservada return", yylloc.first_column,yylloc.first_line); return 'return' }
+"if"                 {$$= new Token("if","palabra reservada if", yylloc.first_column,yylloc.first_line); return 'if' }
+"else"               {$$= new Token("else","palabra reservada else", yylloc.first_column,yylloc.first_line); return 'else' }
 "switch"              return 'switch'
 "case"                return 'case'
 "default"             return 'default' 
-"break"               return 'break'
-"continue"            return 'continue'
-"while"               return 'while'
-"do"                  return 'do'
-"for"                 return 'for'
-"false"               return 'false'
-"true"                return 'true'
-"class"               return 'class'
-"interface"           return 'interface'
-"import"              return 'import'
-"char"                return 'char'
-"double"              return 'double'  
-"int"                 return 'int'
-"String"              return 'String'
-"boolean"             return 'boolean'
-{id}                  return 'id'
+"break"              {$$= new Token("break","palabra reservada break", yylloc.first_column,yylloc.first_line); return 'break' }
+"continue"            {$$= new Token("continue","palabra reservada continue", yylloc.first_column,yylloc.first_line); return 'continue' }
+"while"             {$$= new Token("while","palabra reservada while", yylloc.first_column,yylloc.first_line); return 'while' }
+"do"                {$$= new Token("do","palabra reservada do", yylloc.first_column,yylloc.first_line); return 'do' }
+"for"             {$$= new Token("for","palabra reservada for", yylloc.first_column,yylloc.first_line); return 'for' }
+"false"             {$$= new Token("false","palabra reservada false", yylloc.first_column,yylloc.first_line); return 'false' }
+"true"              {$$= new Token("true","palabra reservada true", yylloc.first_column,yylloc.first_line); return 'true' }
+"class"                 {$$= new Token("Class","Palabra Reservada clase: ", yylloc.first_column,yylloc.first_line); return 'class' }
+"interface"        {$$= new Token("interface","palabra reservada interface", yylloc.first_column,yylloc.first_line); return 'interface' }
+
+"char"                {$$= new Token("char","palabra reservada char", yylloc.first_column,yylloc.first_line); return 'char' }
+"double"              {$$= new Token("double","palabra reservada double", yylloc.first_column,yylloc.first_line); return 'double' }
+"int"                 {$$= new Token("int","palabra reservada int", yylloc.first_column,yylloc.first_line); return 'int' }
+"String"           {$$= new Token("String","palabra reservada String", yylloc.first_column,yylloc.first_line); return 'String' }
+"boolean"            {$$= new Token("boolean","palabra reservada boolean", yylloc.first_column,yylloc.first_line); return 'boolean' }
+{id}                  {$$= new Token(yytext,"id", yylloc.first_column,yylloc.first_line); return 'id' }
 <<EOF>>	          return 'EOF'
 
-//.        {  console.error('Este es un error léxico: ' + yytext + '  en la linea: ' + yylloc.first_line + ', en la columna: ' + yylloc.first_column); }
-      { Errores.add(new NodoError("LEXICO","No se esperaba el caracter: "+yytext,yylloc.first_line));  console.error('Este es un error léxico: ' + yytext + '  en la linea: ' + yylloc.first_line + ', en la columna: ' + yylloc.first_column);}
+      { $$ = new Error("LEXICO","No se esperaba el caracter: "+yytext,yylloc.first_column,yylloc.first_line);  console.error('Este es un error léxico: ' + yytext + '  en la linea: ' + yylloc.first_line + ', en la columna: ' + yylloc.first_column);}
 
 /lex
 
@@ -146,18 +153,23 @@ caracter (\'[^☼]\')
 
 
 
-INICIO : ListaInterfaces EOF{$$ = new Arbol($1); return $$;}
-       |  ListaClases  EOF {$$ = new Arbol($1); return $$;}
-       | EOF {$$ = new Arbol($1); return $$;}
+INICIO :ComienzoA  EOF {return $$}
+         | 
        ;
-
+ComienzoA: ComienzoA InstruccionesA   {$1.push($2); $$ = $1}  
+                  | InstruccionesA {$$ = [$1]}
+;
+InstruccionesA : SentenciaClase{$$ = new Arbol($1); $$= $1 ;}
+       |   SentenciaInterface   {$$ = new Arbol($1); $$= $1;}
+       | EOF {$$ = new Arbol($1); }
+       ;
 
 
 ListaInterfaces: ListaInterfaces SentenciaInterface  { $1.push($2); $$ = $1; }
                  | SentenciaInterface   { $$ = [$1]; }
 ;
 
-SentenciaInterface:'interface' 'id' InicioInterface  {$$ =new Interface(this._$.first_line,this._$.first_column,$2,$3);}
+SentenciaInterface:'public' 'interface' 'id' InicioInterface  {$$ =new Interface(this._$.first_line,this._$.first_column,$2,$3);}
                 ;
 
 InicioInterface : '{' InterfaceMenu '}'  {$$ = $2;}           
@@ -171,11 +183,11 @@ InterfaceMenu: InterfaceMenu DeclaracionInterface   { $1.push($2); $$ = $1; }
 
 
 
-DeclaracionInterface:   'public' TIPO 'id' '(' Metodos_FuncionesI   {$$ =new FuncionInterface(this._$.first_line,this._$.first_column,$1,$2,$3,$4);}
-                        |  TIPO 'id' '(' Metodos_FuncionesI {$$= new FuncionInterface(this._$.first_line,this._$.first_column,"-",$2,$3,$4);}
+DeclaracionInterface:   'public' TIPO 'id' '(' Metodos_FuncionesI   {$$ =new FunctionInterface(this._$.first_line,this._$.first_column,$1,$2,$3,$4);}
+                        |  TIPO 'id' '(' Metodos_FuncionesI {$$= new FunctionInterface(this._$.first_line,this._$.first_column,"-",$2,$3,$4);}
                         ; 
 
-Metodos_FuncionesI: Parametros_Tipo ')' ';'          {$$= new Metodo_FuncionIN(this._$.first_line,this._$.first_column,$2);}                         
+Metodos_FuncionesI: Parametros_Tipo ')' ';'          {$$= new Metodo_FuncionIN(this._$.first_line,this._$.first_column,$1);}                         
                      |')' ';'     {$$= new Metodo_FuncionIN(this._$.first_line,this._$.first_column,[]);}    
                      ;     
 
@@ -189,16 +201,14 @@ ListaClases: ListaClases SentenciaClase { $1.push($2); $$ = $1; }
 
 
                        
-SentenciaClase:'class' 'id' InicioClase {$$ =new Class(this._$.first_line,this._$.first_column,$2,$3); console.log("en una clase")}
-             | error {  console.error('Este es un error sintáctico: [' + yytext + ']  en la linea: ' +  this._$.first_line + ', en la columna: ' + this._$.first_column); Errores.add(new NodoError("Sintactico","error::=       "+yytext+"    Columna:"+ this._$.first_column ,this._$.first_line)); }  
+SentenciaClase:'public' 'class' 'id' InicioClase {$$ =new Class(this._$.first_line,this._$.first_column,$2,$4); console.log("en una clase") }
                ;
                
 
 
 InicioClase : '{' MenuClase '}' {$$ = $2;}              /* este es para que acepte vacios*/
                                | '{' '}' {$$ = [];}
-                            | error {  console.error('Este es un error sintáctico: [' + yytext + ']  en la linea: ' +  this._$.first_line + ', en la columna: ' + this._$.first_column); Errores.add(new NodoError("Sintactico","error::=       "+yytext+"    Columna:"+ this._$.first_column ,this._$.first_line)); }  
-                 ;
+                            ;
 
 
 MenuClase: MenuClase DeclaracionClase { $1.push($2); $$ = $1; }
@@ -207,27 +217,25 @@ MenuClase: MenuClase DeclaracionClase { $1.push($2); $$ = $1; }
 
 
 DeclaracionClase: 'public' 'void' 'id' '(' Metodos_Funciones {$$ =new Metodo_C(this._$.first_line,this._$.first_column,$1,$2,$3,$4);}
-                        | 'void' 'id' '(' Metodos_Funciones  {$$ =new Metodo_C(this._$.first_line,this._$.first_column,".",$2,$3,$4);}
-                       | 'public' TIPO 'id' '(' Metodos_Funciones   {$$ =new Funcion_C(this._$.first_line,this._$.first_column,$1,$2,$3,$4);}
-                         |  TIPO 'id' '(' Metodos_Funciones  {$$= new Funcion_C(this._$.first_line,this._$.first_column,".",$2,$3,$4);} 
+                        | 'void' 'id' '(' Metodos_Funciones  {$$ =new Metodo_C(this._$.first_line,this._$.first_column,".",$2,$2,$4);}
+                       | 'public' TIPO 'id' '(' Metodos_Funciones   {$$ =new Funcion_C(this._$.first_line,this._$.first_column,$1,$2,$3,$5);}
+                         |  TIPO 'id' '(' Metodos_Funciones  {$$= new Funcion_C(this._$.first_line,this._$.first_column,".",$1,$2,$4);} 
                         | 'public' TIPO L_ids AsignacionV_P {$$ =new DeclaracionAfuera(this._$.first_line,this._$.first_column,$1,$2,$3,$4);}
                         | 'public'  'static' 'void' 'main' '(' 'String' '[' ']'  'args' ')' BlockInstrucciones {$$= new Main(this._$.first_line,this._$.first_column,$4,$10);}
-                        | TIPO L_ids AsignacionV_P {$$ =new DeclaracionAfuera(this._$.first_line,this._$.first_column,".",$2,$3,$4);}
+                        | TIPO L_ids AsignacionV_P {$$ =new DeclaracionAfuera(this._$.first_line,this._$.first_column,".",$1,$2,$3);}
                    
-             | error {  console.error('Este es un error sintáctico: [' + yytext + ']  en la linea: ' +  this._$.first_line + ', en la columna: ' + this._$.first_column); Errores.add(new NodoError("Sintactico","error::=       "+yytext+"    Columna:"+ this._$.first_column ,this._$.first_line)); }  
-                         ; 
+                          ; 
 
 
 Metodos_Funciones: Parametros_Tipo  ')' BlockInstrucciones      {$$= new Metodo_Fc(this._$.first_line,this._$.first_column,$1,$3);}                              
-                     |')' BlockInstrucciones     {$$ =new Metodo_Fc(this._$.first_line,this._$.first_column,[],$3);} 
+                     |')' BlockInstrucciones     {$$ =new Metodo_Fc(this._$.first_line,this._$.first_column,null,$3);} 
                      ;                
 
 
 
 Instrucciones : Instrucciones INSTRUCCION { $1.push($2); $$ = $1; }
               | INSTRUCCION               { $$ = [$1]; }
-                | error {  console.error('Este es un error sintáctico: [' + yytext + ']  en la linea: ' +  this._$.first_line + ', en la columna: ' + this._$.first_column); Errores.add(new NodoError("Sintactico","error::=       "+yytext+"    Columna:"+ this._$.first_column ,this._$.first_line)); }  
-            ;
+                ;
 
 INSTRUCCION : SOUT     {$$ = $1;}
             | WHILE                {$$ = $1;}
@@ -316,7 +324,7 @@ EXPRESION : '-' EXPRESION %prec UMENOS	   {$$= new Operaciones(this._$.first_lin
           | STRING_LITERAL			    {  $$ = new Dato_Exp(this._$.first_line, this._$.first_column,"String", $1.replace(/\"/g,"")); }
           | EXPRESION_METODO		    { $$ = $1}
           | caracter                          { $$ = new Dato_Exp( this._$.first_line, this._$.first_column,"char", $1.replace(/\'/g,"")); }
-          | entero                            { $$ = new Dato_Exp( this._$.first_line, this._$.first_column,"int", Number($1) ); }
+          | entero                            { $$ = new Dato_Exp( this._$.first_line, this._$.first_column,"int",Number($1) );console.log("probando un") }
           | '(' EXPRESION ')'		    { $$ = $2; }
           ;
 
@@ -347,15 +355,15 @@ DeclaracionM_Funciones: TIPO L_ids AsignacionV_P {$$= new DeclaracionMF(this._$.
                                         ;
 
 
-L_ids: L_ids ',' 'id'  { $1.push($3); $$ = $1; }
+L_ids: L_ids ',' 'id'  { $1.push( $3); $$ = $1; }
          | 'id'  { $$ = [$1]; }
          ; 
 
 
 
 
-AsignacionV_P: '=' EXPRESION ';' {$$ = $2}
-          | ';' {$$ = [];}
+AsignacionV_P: '=' EXPRESION ';' {$$ = $2 }
+          | ';' {$$ = null;}
           ;
 
 
@@ -363,8 +371,8 @@ AsignacionV_P: '=' EXPRESION ';' {$$ = $2}
 
 
                                                                       
-Parametros_Tipo  :Parametros_Tipo   ','  TIPO 'id'     { $1.push(new Parametro($3 , $4 ,this._$.first_line , this._$.first_column)); $$ = $1; }
-			   | TIPO 'id'{ $$ = [new Parametro($1 , $2 ,this._$.first_line , this._$.first_column)]; }
+Parametros_Tipo  :Parametros_Tipo   ','  TIPO 'id'     { $1.push(new Parametro(this._$.first_line , this._$.first_column,$3,$4)); $$ = $1; }
+			   | TIPO 'id'{ $$ = [new Parametro( this._$.first_line , this._$.first_column,$1 , $2)]; }
                         ;
 
 

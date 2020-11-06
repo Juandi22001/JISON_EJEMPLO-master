@@ -20,7 +20,7 @@ traduccion(){
 }
 execute(){
    this.cadena+="break;"
-
+  return this.cadena;
 }
 
 

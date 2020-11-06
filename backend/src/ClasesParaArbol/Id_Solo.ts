@@ -14,6 +14,12 @@ super(linea,columna);
 this.Id_Solo=Id_Solo;
 }
 execute(){
+
+
+   var T ="";
+
+   T+= this.Id_Solo;
+   return T;
     
 }
 

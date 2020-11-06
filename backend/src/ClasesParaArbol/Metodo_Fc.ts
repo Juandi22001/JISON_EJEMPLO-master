@@ -12,21 +12,31 @@ export class Metodo_Fc extends Node {
 super(linea,columna);
 this.Parametros=Parametros;
 this.Contenido=Contenido;
+
 }
 
-traduccion(){
-}
+
 execute(){
+ var cadenaT=""
 
-  this.cadena+=this.Parametros.toString();
-  this.cadena+=")";
-  this.cadena+="{"
+ if (this.Parametros!=null){
+   
+ cadenaT+="("
+for(let aux  of this.Parametros){
+  cadenaT += aux.ID;
+
+}
+ cadenaT+=")"
+
+ 
+}cadenaT+="{"
   for(let i = 0 ; i < this.Contenido.length ; i++){
-    this.cadena += this.Contenido[i].execute.toString();
+   cadenaT += this.Contenido[i].execute();
   }
-  this.cadena+="}";
+ cadenaT+="}";
   
-  Traduccion.add(this.cadena);
+  Traduccion.add(cadenaT);
+  return cadenaT;
   
     
 }

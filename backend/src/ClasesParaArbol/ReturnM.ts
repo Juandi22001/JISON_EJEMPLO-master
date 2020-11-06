@@ -11,7 +11,7 @@ this.Nombre=Nombre;
 }
 execute(){
 Traduccion.add("return;")
-
+return "Return";
     
 }
 Prueba(){

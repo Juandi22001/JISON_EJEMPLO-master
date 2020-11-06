@@ -23,13 +23,15 @@ traduccion(){
 
 }
 execute(){
-  this.cadena+="Do" +"{"
+  var T =""
+  T+="Do" +"{"
   for(let i = 0 ; i < this.Instrucction.length ; i++){
-    this.cadena += this.Instrucction[i].execute.toString();
+    T += this.Instrucction[i].execute();
 }
-this.cadena+="}"
-this.cadena+="while "+"("+this.Condition.execute.toString()+")"+";"
-Traduccion.add(this.cadena);   
+T+="}"
+T+="while "+"("+this.Condition.execute()+")"+";"
+Traduccion.add(T); 
+return T;  
 }
 
 

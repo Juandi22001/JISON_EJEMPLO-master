@@ -21,15 +21,15 @@ traduccion(){
 
 }
 execute(){
-  
-  this.cadena+=this.ID+"(";
+  var T=""
+  T+=this.ID+"(";
 
   if(this.Exp!=null){
-     this.cadena+=this.Exp.execute.toString();
+     T+=this.Exp.toString();
   }
 
-  this.cadena+=")";
-  Traduccion.add(this.cadena)  
+  T+=")";
+  Traduccion.add(T)  
 }
 
 

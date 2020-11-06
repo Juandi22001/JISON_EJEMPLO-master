@@ -18,13 +18,18 @@ this.Instrucciones=Instrucciones;
 }
 
 traduccion(){
-  this.cadena+="while"+"("+this.Condition.execute.toString()+")"+"{"
-  for(let i = 0 ; i < this.Instrucciones.length ; i++){
-    this.cadena += this.Instrucciones[i].execute.toString();
-  }
-  "}"
+
+
 }
 execute(){
+  var   T=""
+  T+="while"+"("+this.Condition.execute()+")"+"{"
+for(let i = 0 ; i < this.Instrucciones.length ; i++){
+  T += this.Instrucciones[i].execute();
+}
+"}"
+Traduccion.add(T)
+return T;
     
 }
 

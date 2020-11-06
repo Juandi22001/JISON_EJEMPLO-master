@@ -10,9 +10,12 @@ super(linea,columna);
 this.Nombre=Nombre;
 this.EXP=EXP;
 }
+
 execute(){
-    this.cadena+= "return"+this.EXP.execute.toString()+";"
-    Traduccion.add(this.cadena);
+    var T="";
+    T+= "Teturn"+this.EXP.execute()+";"
+    Traduccion.add(T);
+   return T;
 }
 Prueba(){
 

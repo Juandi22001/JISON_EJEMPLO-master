@@ -20,6 +20,8 @@ traduccion(){
 execute(){
   this.cadena+=this.Tipo;
 Traduccion.add(this.cadena)
+
+
     
 }
 

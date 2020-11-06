@@ -21,14 +21,16 @@ this.Contenido=Contenido;
 
 
 execute(){
-    this.cadena+="main()";
+
+    var T =""
+    T+="main()";
 
     for(let i = 0 ; i < this.Contenido.length ; i++){
-        this.cadena += this.Contenido[i].execute.toString();
+        T += this.Contenido[i].execute();
     }
     
-    Traduccion.add(this.cadena);
-       
+    Traduccion.add(T);
+    return T;   
 }
 
 

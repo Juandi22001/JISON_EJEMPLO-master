@@ -26,8 +26,12 @@ traduccion(){
 
 }
 execute(){
-  this.cadena+=this.ID+this.EXP.execute.toString();
-  Traduccion.add(this.cadena);
+
+  var T="";
+  T+=this.ID
+  T+=this.EXP.execute();
+  Traduccion.add(T);
+  return T;
   
 }
 

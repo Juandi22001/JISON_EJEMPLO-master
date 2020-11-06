@@ -1,6 +1,7 @@
 import express from 'express';
  import fs = require('fs'); 
-import {Errores} from './ManejoErrores/Errores'
+const {Errores} =require( './ManejoErrores/Errores')
+const {Token} =require(  './ManejoErrores/Token');
 import { Traduccion } from './ManejoErrores/Traduccion';
 const analizador_jison = require('./Grammar/GramaticaPrueba');
 
@@ -8,7 +9,7 @@ var bodyParser = require("body-parser");
 const cors = require('cors');
 const app = express();
 const port = 4001;
-app.use(cors());
+app.use(cors());  
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
@@ -20,10 +21,13 @@ app.use(express.urlencoded());
 app.use(express.json());
 app.use(bodyParser.json());
 
-fs.appendFile('efe.html',Errores.geterror(),(error)=>{
+
+fs.appendFile('Reporte.html',Token.aux,(error)=>{
   if (error){
     console.log("ee")
    }else {
+  /*   
+*/
    
   
    }
@@ -40,12 +44,18 @@ app.listen(port, err => {
     }
     
     })*/
-    const efe= analizador_jison.parse("class efe{ void a(int a){ if a==1){                      }  }}")
-       
-    console.log(Traduccion.getCadena()+"efeeeeeee");
-    Errores.clear()
-    console.log(Traduccion.getCadena())
-  return console.log(` anda al puerto http://localhost:${port} `);
+    const efe= analizador_jison.parse("public class efe{ } public interface aux{} ")
+   
+let aux ="";
+    for(const Traduccion of efe) {
+			
+			Traduccion.execute();
+			aux+=Traduccion.execute();
+    }
+    const {Traduccion}=require('./ManejoErrores/Traduccion')
+    console.log(aux)
+    
+    return console.log(` ada al puerto http://localhost:${port} `);
     
   
 

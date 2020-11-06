@@ -16,11 +16,12 @@ this.EXP=EXP;
 
 }
 
-traduccion(){
-}
+
 execute(){
-  this.cadena+="console.log("+this.EXP.execute.toString();+");"
-Traduccion.add(this.cadena)
+  var T ="";
+  T+="console.log("+this.EXP.execute();+");"
+Traduccion.add(T)
+return T;
     
 }
 

@@ -1,7 +1,7 @@
 {
   "name": "prueba",
   "version": "1.0.0",
-  "description": "Proyecto 2 compiladores 1",
+  "description": "COMPIproyecto2",
   "main": "index.js",
   "scripts": {
     "ts:node": "ts-node src/",
@@ -10,11 +10,8 @@
     "start": "npm run build && node build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/PabloAndresArg/COMPI1_PROYECTO_2.git"
-  },
-  "author": "Pablo",
+  
+  "author": "Juan",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/PvasquezF/Interprete-Jison/issues"

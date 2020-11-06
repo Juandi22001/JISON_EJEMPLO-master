@@ -20,8 +20,12 @@ this.ID=valor;
 
 
 execute(){
-    this.cadena+=this.Tipo.toString()+" "+this.ID.execute.toString();
-    Traduccion.add(this.cadena)
+
+    var cadenaT="";
+    cadenaT+= this.ID;
+    Traduccion.add(cadenaT)
+
+    return cadenaT;
 }
 
 

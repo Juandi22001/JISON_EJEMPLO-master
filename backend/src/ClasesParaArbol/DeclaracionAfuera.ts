@@ -6,13 +6,13 @@ import { Traduccion } from '../ManejoErrores/Traduccion';
 export class DeclaracionAfuera extends Node {
        Declaracion:Node;
        public :String;
-       Tipo: String;
+       Tipo: Node;
        EXP:Node;
-       ID:String;
-       cadena:string;
+       ID:Node;
+       
        Increment_Decrement :Node;
        Instruccion:Array<Node>;
-  constructor ( linea:Number,columna:Number , publics:String,Tipo:String,ID:String,EXP:Node ){
+  constructor ( linea:Number,columna:Number , publics:String,Tipo:Node,ID:Node,EXP:Node ){
 super(linea,columna);
 this.ID=ID;
 this.public=publics;
@@ -25,11 +25,13 @@ Traduccion(){
 
 
 }
-execute(){
-  this.cadena+= "var"+" "+this.ID+" =";
-this.cadena+=this.EXP.execute.toString();
+public execute(){
+  var cadena=""
+  cadena+= "var"+" "+this.ID+" =";
+cadena+=this.EXP.execute();
 
-Traduccion.add(this.cadena);  
+Traduccion.add(cadena); 
+return cadena ;
 }
 
 

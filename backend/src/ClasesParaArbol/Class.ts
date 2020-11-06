@@ -16,16 +16,18 @@ export class Class extends Node {
     }
 
     
-   execute(){
+  public execute(){
    console.log("siu");
-    this.cadena="Class "+this.id+"{";
+   var cadenaT=""
+   cadenaT+="Class "+this.id+"{";
 
     for(let i = 0 ; i < this.Contenido_Clase.length ; i++){
-           this.cadena += this.Contenido_Clase[i].execute.toString();
+          cadenaT += this.Contenido_Clase[i].execute();
       }
-      this.cadena+="}"
+     cadenaT+="}"
 
    
     Traduccion.add(this.cadena);
-   }
+   return cadenaT;
+}
 }

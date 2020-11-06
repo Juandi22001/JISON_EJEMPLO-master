@@ -12,7 +12,8 @@ this.Nombre=Nombre;
 execute(){
 this.cadena+="continue ;";
 
-Traduccion.add(this.cadena)    
+Traduccion.add(this.cadena) 
+return this.cadena;   
 }
 Prueba(){
 
