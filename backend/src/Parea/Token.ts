@@ -4,8 +4,8 @@ import { Estatico} from './Estatico';// lo importo
 export enum Tipo{
 
 class_,var_,function_,return_,if_,while_,do_,for_,else_,Break_ ,Return_,true,false,null,undefined,let,const,console,consola,log,ParentesisAbierto,ParentesisCerrado
-,LlaveCerrada,LlavaAbierta,comillas,digitos,por,mas,incremento,decremento,menos,puntoycoma,coma,punto,dosPuntos,igual,doble_Igual,menor,menor_Igual,mayor,mayor_Igual,diferente,Y
-,OR,Admiracion,Barra,ComentarioMulti,ComentarioLinea
+,LlaveCerrada,LlavaAbierta,comillas,digitos,por,mas,incremento,decremento,menos,puntoycoma,coma,punto,dosPuntos,igual,doble_Igual,menor,menor_Igual,mayor,mayor_Igual,diferente,YY
+,OR,Admiracion,Barra,ComentarioMulti,ComentarioLinea, decimeal,id,continue
 
 }
 export class Token {
@@ -73,72 +73,81 @@ public  getTipo():string{
             return "palabra reservada consola";
             
         case Tipo.LlavaAbierta:
-            return "palabra reservada Class";
+            return "llave abierta";
             
-        case Tipo.class_:
-            return "palabra reservada Class";
+        case Tipo.LlaveCerrada:
+            return "LLave Cerrada";
             
-        case Tipo.class_:
-            return "palabra reservada Class";
+        case Tipo.ParentesisAbierto:
+            return "Parentesis ABIERTO";
             
-        case Tipo.class_:
-            return "palabra reservada Class";
+        case Tipo.ParentesisCerrado:
+            return "Parentesis Cerrado ";
             
-        case Tipo.class_:
-            return "palabra reservada Class";
+        case Tipo.comillas:
+            return "Comillas";
             
-        case Tipo.class_:
-            return "palabra reservada Class";
+        case Tipo.digitos:
+            return "entero";
             
-        case Tipo.class_:
-            return "palabra reservada Class";
+        case Tipo.por:
+            return "POR ";
             
-        case Tipo.class_:
-            return "palabra reservada Class";
+        case Tipo.mas:
+            return "MAS";
 
             
-        case Tipo.class_:
-            return "palabra reservada Class";
+        case Tipo.incremento:
+            return "Incremento";
             
-        case Tipo.class_:
-            return "palabra reservada Class";
+        case Tipo.decremento:
+            return "Decremento";
             
-        case Tipo.class_:
-            return "palabra reservada Class";
+        case Tipo.coma:
+            return "Coma";
+            case Tipo.continue:
+                return "palabra reservada continue";
+                    
+        case Tipo.puntoycoma:
+            return "punto y coma";
             
-        case Tipo.class_:
-            return "palabra reservada Class";
+        case Tipo.igual:
+            return "Igual";
             
-        case Tipo.class_:
-            return "palabra reservada Class";
+        case Tipo.doble_Igual:
+            return "Doble Igual==";
             
-        case Tipo.class_:
-            return "palabra reservada Class";
+        case Tipo.mayor:
+            return "mayor >";
             
-        case Tipo.class_:
-            return "palabra reservada Class";
+        case Tipo.menor:
+            return "menor <";
             
-        case Tipo.class_:
-            return "palabra reservada Class";
+        case Tipo.menor_Igual:
+            return "menor <=";
             
-        case Tipo.class_:
-            return "palabra reservada Class";
+        case Tipo.mayor_Igual:
+            return "mayor igual >=";
             
-        case Tipo.class_:
-            return "palabra reservada Class";
+        case Tipo.YY:
+            return "AND";
             
-        case Tipo.class_:
-            return "palabra reservada Class";
+        case Tipo.OR:
+            return "OR";
             
-        case Tipo.class_:
-            return "palabra reservada Class";
+        case Tipo.ComentarioLinea:
+            return "Comentario Linea";
             
-        case Tipo.class_:
-            return "palabra reservada Class";
-            
-        case Tipo.class_:
-            return "palabra reservada Class";
-
+        case Tipo.ComentarioMulti:
+            return "Comentario Multilinea0";
+        
+            case Tipo.diferente:
+                return "Diferente para or ";
+        
+                case Tipo.id:
+                    return "identificador ";
+                    case Tipo.decimeal:
+                        return "decimales .. ";        
     }
    
 }

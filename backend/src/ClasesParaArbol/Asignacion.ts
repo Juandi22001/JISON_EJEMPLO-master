@@ -19,13 +19,14 @@ this.EXP=EXP;
 
 }
 traductor(){
+  
+}
+execute(){
   var cadenaT=""
   cadenaT+=this.ID+" "+"="+this.EXP.execute();
 Traduccion.add(cadenaT);
-return cadenaT;
-}
-execute(){
-    
+cadenaT+=" "
+return cadenaT;  
 }
 
 

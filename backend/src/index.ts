@@ -33,18 +33,19 @@ fs.appendFile('Reporte.html',Token.aux,(error)=>{
    }
 })
 app.listen(port, err => {
- /* fs.readFile('efe.txt','utf-8',(error,datos)=>{
+ var alv=""
+  fs.readFile('efe.txt','utf-8',(error,datos)=>{
 
     if (error){
      console.log("efe")
     }else {
-      const efe= analizador_jison.parse(datos)
-       
-      console.log(Traduccion.getCadena()+"efeeeeeee");
+     
+     alv=datos
     }
     
-    })*/
-    const efe= analizador_jison.parse("public class efe{ } public interface aux{} ")
+    })
+    console.log(alv)
+    const efe= analizador_jison.parse( "public class efe {     int constante=100/5*5/5+3+2-1*0+1;  x = true && false;  String variable, variable1,variable2;}")
    
 let aux ="";
     for(const Traduccion of efe) {

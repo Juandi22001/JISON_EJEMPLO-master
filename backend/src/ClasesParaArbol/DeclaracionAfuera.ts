@@ -27,9 +27,16 @@ Traduccion(){
 }
 public execute(){
   var cadena=""
-  cadena+= "var"+" "+this.ID+" =";
-cadena+=this.EXP.execute();
+  cadena+= "var"+" "+this.ID;
 
+  if( this.EXP!=null){
+
+    cadena+="="
+    cadena+=this.EXP.execute();
+
+  }
+
+cadena+=" "
 Traduccion.add(cadena); 
 return cadena ;
 }
