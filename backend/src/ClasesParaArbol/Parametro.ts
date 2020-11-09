@@ -7,14 +7,15 @@ export class Parametro extends Node {
   
     EXP1: Node;
     Tipo :String;
-   ID:Node;
+   ID:String;
+   valor:Node;
     Simbolo : String;
     void :String;
     cadena:string;
-constructor ( linea:Number,columna:Number ,Tipo:String,valor:Node ){
+constructor ( linea:Number,columna:Number ,ID:String,valor:Node ){
 super(linea,columna);
-this.Tipo = Tipo;
-this.ID=valor;
+this.valor=valor;
+this.ID=ID;
 
 }
 
@@ -23,6 +24,10 @@ execute(){
 
     var cadenaT="";
     cadenaT+= this.ID;
+    if( this.valor!=null){
+
+    cadenaT+=this.valor.execute()
+    }
     Traduccion.add(cadenaT)
 
     return cadenaT;

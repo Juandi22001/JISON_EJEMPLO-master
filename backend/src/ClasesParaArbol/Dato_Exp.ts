@@ -20,7 +20,17 @@ this.valor=valor;
 
 execute(){
   var cadenaAux=""
-   cadenaAux+=this.valor;
+  if (this.Tipo=="String"){
+
+    cadenaAux+="\""+this.valor+"\"";
+ 
+
+  }else{
+
+    cadenaAux+=this.valor;
+  }
+ 
+  
 Traduccion.add(cadenaAux)
 return cadenaAux;
 }

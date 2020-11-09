@@ -23,7 +23,13 @@ traductor(){
 }
 execute(){
   var cadenaT=""
-  cadenaT+=this.ID+" "+"="+this.EXP.execute();
+  cadenaT+=this.ID+" "
+  
+  if(this.EXP!=null){
+
+
+    cadenaT+="="+this.EXP.execute()
+  }
 Traduccion.add(cadenaT);
 cadenaT+=" "
 return cadenaT;  

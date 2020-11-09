@@ -14,7 +14,8 @@
    
    const {Asignacion}=require('../ClasesParaArbol/Asignacion')
    const {Do_While}=require('../ClasesParaArbol/Do_While')
-  
+    const {Comentarios}=require('../ClasesParaArbol/Comentarios')
+ 
    const {Increment_Decrements}=require('../ClasesParaArbol/Increment_Decrement')
    const {Sout}=require('../ClasesParaArbol/Sout')
    const {Whiles}=require('../ClasesParaArbol/While')
@@ -58,12 +59,13 @@ caracter (\'[^☼]\')
 %%
 \s+ // cualquier cosa xd
              
-"/""/".*                             //efe
-[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/] //efe
+"/""/".*                      {$$= new Token(yytext,"comentario de Linea ", yylloc.first_column,yylloc.first_line); return 'ComentarioLinea' }
+[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]  {$$= new Token(yytext,"comentarioMulti ", yylloc.first_column,yylloc.first_line); return 'ComentarioMulti' }
+
 
 
 {caracter}         {$$= new Token(yytext,"char ", yylloc.first_column,yylloc.first_line); return 'caracter' }
-
+{stringliteral}      {$$= new Token(yytext,"cadena ", yylloc.first_column,yylloc.first_line); return 'cadena' }
 {decimal}             {$$= new Token(yytext,"decimal ", yylloc.first_column,yylloc.first_line); return 'decimal' }
 {entero}           {$$= new Token(yytext,"entero ", yylloc.first_column,yylloc.first_line); return 'entero' }
 ":"                    {$$= new Token(":","dos puntos ", yylloc.first_column,yylloc.first_line); return ':' }
@@ -80,7 +82,7 @@ caracter (\'[^☼]\')
 "<="                   {$$= new Token("<=","menor igual ", yylloc.first_column,yylloc.first_line); return '<=' }
 ">="                 {$$= new Token(">=","mayor igual ", yylloc.first_column,yylloc.first_line); return '>=' }
 "<"                    {$$= new Token("<","menor ", yylloc.first_column,yylloc.first_line); return '<' }
-">"                  {$$= new Token(">","mayor ", yylloc.first_column,yylloc.first_line); return ' >' }
+">"                  {$$= new Token(">","mayor ", yylloc.first_column,yylloc.first_line); return '>' }
 "=="                   {$$= new Token("==","doble igual ", yylloc.first_column,yylloc.first_line); return '==' }
 "!="                   {$$= new Token("!=","diferente ", yylloc.first_column,yylloc.first_line); return '!=' }
 
@@ -95,6 +97,11 @@ caracter (\'[^☼]\')
 "("                    {$$= new Token("(" , "parentesis abierto", yylloc.first_column,yylloc.first_line); return '(' }
 
 ")"                     {$$= new Token(")","parentesis cerrado", yylloc.first_column,yylloc.first_line); return ')' }
+
+"["                    {$$= new Token("[" , "CORCHETE abierto", yylloc.first_column,yylloc.first_line); return '[' }
+
+"]"                     {$$= new Token("]","Corchete cerrado", yylloc.first_column,yylloc.first_line); return ']' }
+
 "{"                     {$$= new Token("{","Llave abierta", yylloc.first_column,yylloc.first_line); return '{' }
 "}"                     {$$= new Token("}",  "llave cerrada", yylloc.first_column,yylloc.first_line); return '}' }
 "public"                {$$= new Token("public","palabra reservada public", yylloc.first_column,yylloc.first_line); return 'public' }
@@ -161,10 +168,14 @@ ComienzoA: ComienzoA InstruccionesA   {$1.push($2); $$ = $1}
 ;
 InstruccionesA : SentenciaClase{$$ = new Arbol($1); $$= $1 ;}
        |   SentenciaInterface   {$$ = new Arbol($1); $$= $1;}
+        |COMENTARIOS {$$=$1}
        | EOF {$$ = new Arbol($1); }
        ;
 
+COMENTARIOS:'ComentarioLinea' {$$ =new Comentarios(this._$.first_line,this._$.first_column,$1);}
+|'ComentarioMulti' {$$ =new Comentarios(this._$.first_line,this._$.first_column,$1);}
 
+;
 ListaInterfaces: ListaInterfaces SentenciaInterface  { $1.push($2); $$ = $1; }
                  | SentenciaInterface   { $$ = [$1]; }
 ;
@@ -185,7 +196,8 @@ InterfaceMenu: InterfaceMenu DeclaracionInterface   { $1.push($2); $$ = $1; }
 
 DeclaracionInterface:   'public' TIPO 'id' '(' Metodos_FuncionesI   {$$ =new FunctionInterface(this._$.first_line,this._$.first_column,$1,$2,$3,$4);}
                         |  TIPO 'id' '(' Metodos_FuncionesI {$$= new FunctionInterface(this._$.first_line,this._$.first_column,"-",$2,$3,$4);}
-                        ; 
+                        |'public' 'void' 'id' '(' Metodos_FuncionesI {$$= new FunctionInterface(this._$.first_line,this._$.first_column,"-",$2,$3,$4);}
+                        |COMENTARIOS {$$=$1};
 
 Metodos_FuncionesI: Parametros_Tipo ')' ';'          {$$= new Metodo_FuncionIN(this._$.first_line,this._$.first_column,$1);}                         
                      |')' ';'     {$$= new Metodo_FuncionIN(this._$.first_line,this._$.first_column,[]);}    
@@ -201,7 +213,7 @@ ListaClases: ListaClases SentenciaClase { $1.push($2); $$ = $1; }
 
 
                        
-SentenciaClase:'public' 'class' 'id' InicioClase {$$ =new Class(this._$.first_line,this._$.first_column,$2,$4); console.log("en una clase") }
+SentenciaClase:'public' 'class' 'id' InicioClase {$$ =new Class(this._$.first_line,this._$.first_column,$3,$4); console.log("en una clase") }
                ;
                
 
@@ -216,20 +228,30 @@ MenuClase: MenuClase DeclaracionClase { $1.push($2); $$ = $1; }
                                ;
 
 
-DeclaracionClase: 'public' 'void' 'id' '(' Metodos_Funciones {$$ =new Metodo_C(this._$.first_line,this._$.first_column,$1,$2,$3,$4);}
+DeclaracionClase: 'public' 'void' 'id' '(' Metodos_Funciones {$$ =new Metodo_C(this._$.first_line,this._$.first_column,$1,$2,$3,$5);}
                         | 'void' 'id' '(' Metodos_Funciones  {$$ =new Metodo_C(this._$.first_line,this._$.first_column,".",$2,$2,$4);}
                        | 'public' TIPO 'id' '(' Metodos_Funciones   {$$ =new Funcion_C(this._$.first_line,this._$.first_column,$1,$2,$3,$5);}
                          |  TIPO 'id' '(' Metodos_Funciones  {$$= new Funcion_C(this._$.first_line,this._$.first_column,".",$1,$2,$4);} 
-                        | 'public' TIPO L_ids AsignacionV_P {$$ =new DeclaracionAfuera(this._$.first_line,this._$.first_column,$1,$2,$3,$4);}
-                        | 'public'  'static' 'void' 'main' '(' 'String' '[' ']'  'args' ')' BlockInstrucciones {$$= new Main(this._$.first_line,this._$.first_column,$4,$10);}
+                        | DECLARACION {$$=$1}
+                        | 'public'  'static' 'void' 'main' '(' 'String' '[' ']'  'args' ')' BlockInstrucciones {$$= new Main(this._$.first_line,this._$.first_column,$4,$11);}
                         | TIPO L_ids AsignacionV_P {$$ =new DeclaracionAfuera(this._$.first_line,this._$.first_column,".",$1,$2,$3);}
+                        |EXPRESION_METODO ';'{$$=$1}
+                        |COMENTARIOS {$$=$1}
                         |'id' '=' EXPRESION ';'  {$$= new Asignacion(this._$.first_line,this._$.first_column,$1,$3);} 
-                   
+                        
+                       
+
                           ; 
 
+DECLARACION:'public' TIPO L_ids AsignacionV_P {$$ =new DeclaracionAfuera(this._$.first_line,this._$.first_column,$1,$2,$3,$4);};
 
-Metodos_Funciones: Parametros_Tipo  ')' BlockInstrucciones      {$$= new Metodo_Fc(this._$.first_line,this._$.first_column,$1,$3);}                              
-                     |')' BlockInstrucciones     {$$ =new Metodo_Fc(this._$.first_line,this._$.first_column,null,$3);} 
+
+Metodos_Funciones:   Parametros_Tipo  ')' BlockInstrucciones      {$$= new Metodo_Fc(this._$.first_line,this._$.first_column,$1,$3);}                              
+                     | Parametros_Tipo ')' ';'
+                     |')' BlockInstrucciones     {$$ =new Metodo_Fc(this._$.first_line,this._$.first_column,null,$2);} 
+                     |')' ';'     {$$ =new Metodo_Fc(this._$.first_line,this._$.first_column,null,$2);} 
+                    
+
                      ;                
 
 
@@ -239,16 +261,21 @@ Instrucciones : Instrucciones INSTRUCCION { $1.push($2); $$ = $1; }
                 ;
 
 INSTRUCCION : SOUT     {$$ = $1;}
+            |COMENTARIOS {$$=$1}
             | WHILE                {$$ = $1;}
             | IF                   {$$ = $1;}
             | DOWHILE              {$$ = $1;}
             | FOR       {$$ = $1;}
+                                    |EXPRESION_METODO{$$=$1}
+
             | AsignacionV_P_SIMPLE     {$$ = $1;}
             | DeclaracionM_Funciones {$$ = $1;}
             | CONTINUE {$$ = $1; console.log("continue");}
             | Return_F {$$ = $1;}
             | Return_M{$$ = $1;}
             | BREAK {$$ = $1;console.log("break");}
+            |Increment_Decrement2 {$$=$1;console.log("incremento")}
+         
             ;
 TIPO : 'int'  {$$ = new TipoV($1);}
      | 'String' {$$ = new TipoV($1);}
@@ -260,19 +287,22 @@ TIPO : 'int'  {$$ = new TipoV($1);}
 
 FOR:'for' '(' Declaracion_f ';' EXPRESION ';' Increment_Decrement ')' BlockInstrucciones  {$$= new For_alv(this._$.first_line,this._$.first_column,$3,$5,$7,$9);} 
              ;
-
 Declaracion_f: TIPO 'id' '=' EXPRESION  {$$ =new Declaracion_For(this._$.first_line,this._$.first_column,$1,$2,$4);} 
        | 'id' '=' EXPRESION {$$ =new Asignacion(this._$.first_line,this._$.first_column,$1,$3);} 
+       | TIPO 'id' {$$ =new Asignacion(this._$.first_line,this._$.first_column,$2,null);} 
        ;
 Increment_Decrement: 'id' 'incremento'  {$$ =new Increment_Decrements(this._$.first_line,this._$.first_column,$1,$2);} 
            | 'id' 'decremento'   {$$ =new Increment_Decrements(this._$.first_line,this._$.first_column,$1,$2);} 
            ;
 
+Increment_Decrement2: 'id' 'incremento'  ';' {$$ =new Increment_Decrements(this._$.first_line,this._$.first_column,$1,$2);} 
+           | 'id' 'decremento'   ';'  {$$ =new Increment_Decrements(this._$.first_line,this._$.first_column,$1,$2);} 
+           ;
 
 DOWHILE: 'do' BlockInstrucciones  'while' Condicionales ';'{$$ =new Do_While(this._$.first_line,this._$.first_column,$1,$2,$4);} 
        ;
 
-SOUT: 'System' '.' 'out' '.'  TipoPrint '(' EXPRESION ')' ';'{$$= new Sout(this._$.first_line,this._$.first_column,$3,$5);
+SOUT: 'System' '.' 'out' '.'  TipoPrint '(' EXPRESION ')' ';'{$$= new Sout(this._$.first_line,this._$.first_column,$7,$7);
 } 
                 ;
 
@@ -322,11 +352,12 @@ EXPRESION : '-' EXPRESION %prec UMENOS	   {$$= new Operaciones(this._$.first_lin
            | 'decimal'		           { $$ = new Dato_Exp(this._$.first_line, this._$.first_column,"Double", Number($1)); }
           | 'true'				    { $$ = new Dato_Exp( this._$.first_line, this._$.first_column,"Boolean", true); }
           | 'false'				    {  $$ = new Dato_Exp(this._$.first_line, this._$.first_column,"Boolean", false); }
-          | STRING_LITERAL			    {  $$ = new Dato_Exp(this._$.first_line, this._$.first_column,"String", $1.replace(/\"/g,"")); }
+          | 'cadena'			    {  $$ = new Dato_Exp(this._$.first_line, this._$.first_column,"String", $1.replace(/\"/g,"")); }
           | EXPRESION_METODO		    { $$ = $1}
           | caracter                          { $$ = new Dato_Exp( this._$.first_line, this._$.first_column,"char", $1.replace(/\'/g,"")); }
           | entero                            { $$ = new Dato_Exp( this._$.first_line, this._$.first_column,"int",Number($1) );console.log("probando un") }
           | '(' EXPRESION ')'		    { $$ = $2; }
+          |Increment_Decrement {$$=$1}
           ;
 
 
@@ -341,7 +372,7 @@ AsignacionV_P_SIMPLE: 'id' '=' EXPRESION ';'  {$$= new Asignacion(this._$.first_
 
 
 EXPRESION_METODO: 'id' '(' Llamar_Metodo_Exp ')' {$$= new LlamadaMetodo(this._$.first_line,this._$.first_column,$1,$3);} 
-                | 'id' '(' ')'    {$$= new LlamadaMetodo(this._$.first_line,this._$.first_column,$1,[]);} 
+                | 'id' '(' ')'    {$$= new LlamadaMetodo(this._$.first_line,this._$.first_column,$1,null);} 
                 | 'id'   {$$ =new Id_Solo(this._$.first_line,this._$.first_column,$1);} 
                 ;
 
@@ -365,6 +396,9 @@ L_ids: L_ids ',' 'id'  { $1.push( $3); $$ = $1; }
 
 AsignacionV_P: '=' EXPRESION ';' {$$ = $2 }
           | ';' {$$ = null;}
+          |'incremento' ';' {$$ = $1 }
+          |'decremento' ';'{$$ = $1 }
+          
           ;
 
 
@@ -373,7 +407,9 @@ AsignacionV_P: '=' EXPRESION ';' {$$ = $2 }
 
                                                                       
 Parametros_Tipo  :Parametros_Tipo   ','  TIPO 'id'     { $1.push(new Parametro(this._$.first_line , this._$.first_column,$3,$4)); $$ = $1; }
-			   | TIPO 'id'{ $$ = [new Parametro( this._$.first_line , this._$.first_column,$1 , $2)]; }
+			   | TIPO 'id'{ $$ = [new Parametro( this._$.first_line , this._$.first_column,$2 , null)]; }
+         | EXPRESION{ $$ = [new Parametro( this._$.first_line , this._$.first_column,"" , $1)]; }
+         
                         ;
 
 
@@ -386,9 +422,9 @@ CONTINUE: 'continue' ';'  {$$ = new Continues( $1, this._$.first_line, this._$.f
                   ;
 Return_M: 'return' ';'{$$ = new ReturnM($1, this._$.first_line , this._$.first_column);}
                         ;
-Return_F: 'return' EXPRESION ';' {$$ = new ReturnF($1, this._$.first_line , this._$.first_column);}
+Return_F: 'return' EXPRESION ';' {$$ = new ReturnF( this._$.first_line , this._$.first_column,$2);}
                          ;
-Break_Ciclo: 'break' ';' {$$=new Break(this._$.first_line,this._$.first_column,$1);}
+BREAK: 'break' ';' {$$=new Break(this._$.first_line,this._$.first_column,$1);}
                          ; 
 
 

@@ -23,12 +23,12 @@ this.Contenido=Contenido;
 execute(){
 
     var T =""
-    T+="main()";
-
+    T+="main()"+"{";
+       
     for(let i = 0 ; i < this.Contenido.length ; i++){
         T += this.Contenido[i].execute();
     }
-    
+    T+="}"
     Traduccion.add(T);
     return T;   
 }

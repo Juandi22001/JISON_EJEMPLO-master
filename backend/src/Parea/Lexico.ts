@@ -244,6 +244,11 @@ else if(this.lexema=="null"){
             this.agregar(Tipo.undefined);
             i--;
            }
+           else if(this.lexema=="main"){
+
+            this.agregar(Tipo.main);
+            i--;
+           }
           else if(this.lexema=="let"){
 
             this.agregar(Tipo.let);

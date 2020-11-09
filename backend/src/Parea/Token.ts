@@ -5,7 +5,7 @@ export enum Tipo{
 
 class_,var_,function_,return_,if_,while_,do_,for_,else_,Break_ ,Return_,true,false,null,undefined,let,const,console,consola,log,ParentesisAbierto,ParentesisCerrado
 ,LlaveCerrada,LlavaAbierta,comillas,digitos,por,mas,incremento,decremento,menos,puntoycoma,coma,punto,dosPuntos,igual,doble_Igual,menor,menor_Igual,mayor,mayor_Igual,diferente,YY
-,OR,Admiracion,Barra,ComentarioMulti,ComentarioLinea, decimeal,id,continue
+,OR,Admiracion,Barra,ComentarioMulti,ComentarioLinea, decimeal,id,continue,main
 
 }
 export class Token {
@@ -83,7 +83,9 @@ public  getTipo():string{
             
         case Tipo.ParentesisCerrado:
             return "Parentesis Cerrado ";
-            
+            case Tipo.main:
+                return "palabra reservada main";
+               
         case Tipo.comillas:
             return "Comillas";
             

@@ -6,17 +6,17 @@ import { Traduccion } from '../ManejoErrores/Traduccion';
 export class Declaracion_For extends Node {
        Declaracion:Node;
        Tipo: String;
-       EXP:Node;
+       EXP2:Node;
        ID:String;
        cadena:string;
        Increment_Decrement :Node;
        Instruccion:Array<Node>;
-  constructor ( linea:Number,columna:Number , Tipo:String,ID:String,EXP:Node ){
+  constructor ( linea:Number,columna:Number , Tipo:String,ID:String,EXP2:Node ){
 super(linea,columna);
 this.ID=ID;
 this.Tipo=Tipo;
-this.EXP=EXP;
-
+this.EXP2=EXP2;
+console.log(this.EXP2.execute()+"-------")
 }
 
 traduccion(){
@@ -29,7 +29,12 @@ execute(){
 
   var T="";
   T+=this.ID
-  T+=this.EXP.execute();
+
+  if ( this.EXP2!=null){
+
+    T+=this.EXP2.execute();
+  
+  }
   Traduccion.add(T);
   return T;
   

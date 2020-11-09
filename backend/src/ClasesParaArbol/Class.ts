@@ -19,7 +19,7 @@ export class Class extends Node {
   public execute(){
    console.log("siu");
    var cadenaT=""
-   cadenaT+="Class "+this.id+"{";
+   cadenaT+="class "+this.id+"{";
 
     for(let i = 0 ; i < this.Contenido_Clase.length ; i++){
           cadenaT += this.Contenido_Clase[i].execute();

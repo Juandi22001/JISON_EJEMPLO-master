@@ -6,11 +6,11 @@ import { Traduccion } from '../ManejoErrores/Traduccion';
 export class LlamadaMetodo extends Node {
   
    ID: String;
-  Exp :Node
+  Exp :Array<Node>
     Simbolo : String;
     void :String;
     cadena:string;
-constructor ( linea:Number,columna:Number ,ID :String,Exp:Node ){
+constructor ( linea:Number,columna:Number ,ID :String,Exp:Array<Node> ){
 super(linea,columna);
 this.ID=ID;
 this.Exp=Exp;
@@ -24,9 +24,9 @@ execute(){
   var T=""
   T+=this.ID+"(";
 
-  if(this.Exp!=null){
-     T+=this.Exp.toString();
-  }
+  for(let i = 0 ; i < this.Exp.length ; i++){
+    T += this.Exp[i].execute();
+}
 
   T+=")";
   Traduccion.add(T)  

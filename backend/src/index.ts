@@ -4,7 +4,7 @@ const {Errores} =require( './ManejoErrores/Errores')
 const {Token} =require(  './ManejoErrores/Token');
 import { Traduccion } from './ManejoErrores/Traduccion';
 const analizador_jison = require('./Grammar/GramaticaPrueba');
-
+var alv=""
 var bodyParser = require("body-parser");
 const cors = require('cors');
 const app = express();
@@ -13,9 +13,9 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
+let aux=""
 
-
-
+let Traducir="";
 app.set('views', __dirname);
 app.use(express.urlencoded());
 app.use(express.json());
@@ -32,30 +32,52 @@ fs.appendFile('Reporte.html',Token.aux,(error)=>{
   
    }
 })
+
+
+app.get('/TraduccionJS', (req, res) => {
+   const entrada = req.body.entrada;
+
+  
+   res.send(Traducir )
+
+});
+
+
+app.post('/JSS', (req, res) => {
+  const entrada = req.body.Cadena;
+Traducir="";                                
+aux+=entrada;
+console.log(req)
+    
+const efe= analizador_jison.parse( entrada)
+for(const Traduccion of efe) {
+
+Traduccion.execute();
+Traducir+=Traduccion.execute();
+}
+const {Traduccion}=require('./ManejoErrores/Traduccion')
+console.log(Traducir)
+
+ res.send(aux)
+});
+
+
 app.listen(port, err => {
- var alv=""
   fs.readFile('efe.txt','utf-8',(error,datos)=>{
 
     if (error){
      console.log("efe")
     }else {
      
-     alv=datos
+     alv+=datos
     }
     
     })
     console.log(alv)
-    const efe= analizador_jison.parse( "public class efe {     int constante=100/5*5/5+3+2-1*0+1;  x = true && false;  String variable, variable1,variable2;}")
-   
-let aux ="";
-    for(const Traduccion of efe) {
-			
-			Traduccion.execute();
-			aux+=Traduccion.execute();
-    }
-    const {Traduccion}=require('./ManejoErrores/Traduccion')
-    console.log(aux)
+
     
+
+let aux ="";
     return console.log(` ada al puerto http://localhost:${port} `);
     
   

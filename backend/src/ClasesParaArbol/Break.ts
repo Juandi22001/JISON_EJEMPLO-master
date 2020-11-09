@@ -19,8 +19,9 @@ traduccion(){
 
 }
 execute(){
-   this.cadena+="break;"
-  return this.cadena;
+   var T =""
+   T+="break;"
+  return T;
 }
 
 
