@@ -25,7 +25,8 @@ execute(){
 var cadenaT="";
     cadenaT+="function"+"  "+this.Nombre+"  ";
     cadenaT+=this.M_I.execute();
-    cadenaT+="{"
+    cadenaT+="{"+"\n"
+    cadenaT+="    "
     Traduccion.add(cadenaT) 
     
     return cadenaT;

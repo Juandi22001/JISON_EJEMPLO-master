@@ -34,6 +34,7 @@ execute(){
     }
 
      cadenaT+=" ";
+     cadenaT+="\n" 
     Traduccion.add(cadenaT)
     return cadenaT;
 } 

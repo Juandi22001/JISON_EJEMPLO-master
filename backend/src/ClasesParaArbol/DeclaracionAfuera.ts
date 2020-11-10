@@ -7,16 +7,14 @@ export class DeclaracionAfuera extends Node {
        Declaracion:Node;
        public :String;
        Tipo: Node;
-       EXP:Node;
+       EXP:Array <Node>;
        ID:Node;
        
        Increment_Decrement :Node;
        Instruccion:Array<Node>;
-  constructor ( linea:Number,columna:Number , publics:String,Tipo:Node,ID:Node,EXP:Node ){
+  constructor ( linea:Number,columna:Number ,EXP:Array <Node> ){
 super(linea,columna);
-this.ID=ID;
-this.public=publics;
-this.Tipo=Tipo;
+
 this.EXP=EXP;
 
 }
@@ -27,16 +25,17 @@ Traduccion(){
 }
 public execute(){
   var cadena=""
-  cadena+= "var"+" "+this.ID;
-
-  if( this.EXP!=null){
+  cadena+= "var"+" "
+  for(let i=0; i<this.EXP.length;i++){
 
     cadena+="="
-    cadena+=this.EXP.execute();
-
-  }
+    cadena+=this.EXP[i].execute();
+}
+  
+  cadena+="\n"
 
 cadena+=" "
+
 Traduccion.add(cadena); 
 return cadena ;
 }

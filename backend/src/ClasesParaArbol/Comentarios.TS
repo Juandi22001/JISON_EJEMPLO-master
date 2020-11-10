@@ -13,7 +13,8 @@ execute(){
 
     var T="";
 T+=this.Comentario;
-console.log(this.Comentario+"----")
+T+="\n"
+T+=" "
 Traduccion.add(T) 
 return T;   
 }

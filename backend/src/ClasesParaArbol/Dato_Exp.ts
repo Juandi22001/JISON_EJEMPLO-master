@@ -30,7 +30,7 @@ execute(){
     cadenaAux+=this.valor;
   }
  
-  
+  cadenaAux+=" "
 Traduccion.add(cadenaAux)
 return cadenaAux;
 }

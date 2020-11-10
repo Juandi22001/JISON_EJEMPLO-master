@@ -36,6 +36,7 @@ execute(){
   
   }
   Traduccion.add(T);
+  T+=" "
   return T;
   
 }

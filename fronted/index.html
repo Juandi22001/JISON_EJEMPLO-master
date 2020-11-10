@@ -42,7 +42,7 @@
 
 <body class="MIfondo">
     <div class="contenedor">
-        
+        <h1> Proyecto 2 201807335 </h1>
         <div id="pestanas">
             <ul id=lista>
             </ul>
@@ -54,13 +54,21 @@
             </div>
         </body>
       
-        <button onclick="Analizar();" title="Analizar" id="btn6" class="btn btn-outline-success text-black">Analizar <i class="fa fa-wordpress" aria-hidden="true"></i></button>
-        <button onclick="agregar();" title="AgregarPestana" id="btn4" class="btn btn-success text-black"> <i class="fa fa-plus-circle" aria-hidden="true"></i> Agregar Pestana</button>
-        <button onclick="quitar();" title="QuitarPestana" id="btn5" class="btn btn-danger text-black">Quitar Pestana <i class="fa fa-xing" aria-hidden="true"></i></button>
+        <button onclick="Analizar();" title="Analizar" id="btn6" class="btn btn-dark text-black">Analizar JAVA <i class="fa fa-youtube-square" aria-hidden="true"></i></button>
+        <button onclick="py();" title="Analizar" id="btn6" class="btn btn-dark text-black">Analizar Js <i class="fa fa-youtube-square" aria-hidden="true"></i></button>
+      
+        <button onclick="agregar();" title="Agregar" id="btn4" class="btn btn-outline-light text-black"> <i class="fa fa-plus-circle" aria-hidden="true"></i> Agregar Pestana</button>
+        <button onclick="quitar();" title="Quitar" id="btn5" class="btn btn-outline-light text-black">Quitar Pestana <i class="fa fa-xing" aria-hidden="true"></i></button>
      
 
-       
+        <div class="form-group purple-border">
+            <label for="exampleFormControlTextarea4">Traduccion</label>
+            <textarea class="form-control" id="textarea" rows="3"></textarea>
+          </div> 
     </div>
+
+      
+      
     <br>
     <br>
     <br>
@@ -87,34 +95,6 @@
 
 
 
-<div class="contenedor">
-    <input id="fileInput2" title="Abrir" type="file" size="50" onchange="AbrirArchivo2(this.files)" class="btn btn-outline-secondary">
-    <button onclick="agregar2();" title="AgregarPestana" id="btn42" class="btn btn-outline-success text-black"> <i class="fa fa-plus-circle" aria-hidden="true"></i> Agregar Pestana</button>
-    <button onclick="quitar2();" title="QuitarPestana" id="btn52" class="btn btn-outline-danger text-black">Quitar Pestana <i class="fa fa-yelp" aria-hidden="true"></i></button>
-    	     
-    
-    <div id="pestanas2">
-        <ul id=lista2>
-        </ul>
-    </div>
-    <body>
-        <div id="contenidopestanas2">
-
-        </div>
-    </body>
-</div>
-
-
-
-
-
-
-</body>
-
-
-<div id = "copias">
-
-</div>
 
 
 
@@ -153,10 +133,9 @@
 
 
 <script>
-
-function Analizar(){
+function py(){
     var Contenido=document.getElementById("textarea0");
-
+    var Contenido2=document.getElementById("textarea")
     alert(Contenido.value)
     console.log("--"+Contenido.value)
 
@@ -165,7 +144,7 @@ function Analizar(){
 		Cadena: Contenido.value		
 		
 	};
-
+/*
     axios.get('../TokensJS')
 		
 		.then((response) => {
@@ -180,15 +159,15 @@ function Analizar(){
 			console.log(error);
 		
         });	 
-
-
-        axios.post('../AnalisisJS', Configuracion )
+*/
+let respuesta=""
+        axios.post('../AnalisisPY', Configuracion )
 		
 		.then((response) => {
 			
 	
-            console.log(response.data)
-            
+            console.log(response.data+"-----------")
+            Contenido2.value+=response.data
 
 		
 		})
@@ -197,7 +176,58 @@ function Analizar(){
 		
 			console.log("No se pudo realizar el analisis por lo tanto no se pudo hacer la")
         });
-  
+
+        Contenido2.value+="Traduccion a python "+"\n";       
+ 
+
+
+}
+function Analizar(){
+    var Contenido=document.getElementById("textarea0");
+    var Contenido2=document.getElementById("textarea")
+    alert(Contenido.value)
+    console.log("--"+Contenido.value)
+
+    var Configuracion = {
+		
+		Cadena: Contenido.value		
+		
+	};
+/*
+    axios.get('../TokensJS')
+		
+		.then((response) => {
+			
+		//	DescargarArchivo(response.data, "ReporteDeTokensJS.pdf", "text/pdf");
+		  
+		})
+		.catch((error) => {
+			
+		
+			console.log("efe");
+			console.log(error);
+		
+        });	 
+*/
+let respuesta=""
+        axios.post('../AnalisisJS', Configuracion )
+		
+		.then((response) => {
+			
+	
+            console.log(response.data+"-----------")
+            Contenido2.value+=response.data
+
+		
+		})
+		.catch((error) => {
+			
+		
+			console.log("No se pudo realizar el analisis por lo tanto no se pudo hacer la")
+        });
+
+        Contenido2.value+="Traduccion a JS "+"\n";       
+        
 }
 
 </script>

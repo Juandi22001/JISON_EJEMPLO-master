@@ -29,6 +29,7 @@ func main() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/TokensJS", TokensJS)
 	http.HandleFunc("/AnalisisJS", AnalisisJS)
+	http.HandleFunc("/AnalisisPY", AnalisisPY)
 	
 	fmt.Printf("Servidor escuchando en: http://localhost:7000/")
 	http.ListenAndServe(":7000", nil)
@@ -105,6 +106,80 @@ func TokensJS(w http.ResponseWriter, r *http.Request) {
 
 		// Peticion NodeJs
 		Peticion := "http://localhost:4001/JSS"
+
+		// Solicitar Peticion A NodeJs
+		Req, Error := http.NewRequest("POST", Peticion, bytes.NewBuffer(JsonFormat))
+        // Verificar Si Hay Errores
+		if Error != nil {
+
+			print("Error Creando Petición: %v", Error)
+
+		}
+
+		// Agregar Encabezados
+		Req.Header.Add("Content-Type", "application/json")
+		// Req.Header.Add("X-Hola-Mundo", "Ejemplo")
+
+		// Respueta NodeJS
+		Response, Error := ClientHTTP.Do(Req)
+
+		// Verificcar Si Hay Error
+		if Error != nil {
+
+			print("Error Haciendo Petición: %v", Error)
+
+		}
+
+		// Cerrar Cuerpo Response
+		defer Response.Body.Close()
+
+		// Cuerpo De La Respuseta
+		RespuestaCuerpo, Error := ioutil.ReadAll(Response.Body)
+
+		// Verificar Si Hay Error
+		if Error != nil {
+
+			print("Error Leyendo Respuesta: %v", Error)
+
+		}
+            print(string(RespuestaCuerpo))
+		// Enviar Respuesta
+		_, _ = fmt.Fprintf(w, "%s", RespuestaCuerpo)
+		
+
+	}
+
+	func AnalisisPY(w http.ResponseWriter, r *http.Request) {
+		
+		ClientHTTP := &http.Client{}
+
+		// Decodificador Entrada
+		var Decoder = json.NewDecoder(r.Body)
+
+		// Cadena A Analizar
+		var Cadena CadenaAnalizar
+        
+		// Verficar Si Hay Error
+		Error := Decoder.Decode(&Cadena)
+
+		// Verificar Si Hay Error
+		if Error != nil {
+
+			print("Error Al Codificar La Entrada: %v", Error)
+
+		}
+		// Json Para El Request
+		JsonFormat, Error := json.Marshal(Cadena)
+		
+		// Verificar Si Hay Error
+		if Error != nil {
+
+			print("Error Al Convertir La Cadena En Json: %v", Error)
+
+		}
+
+		// Peticion NodeJs
+		Peticion := "http://localhost:4006/Python"
 
 		// Solicitar Peticion A NodeJs
 		Req, Error := http.NewRequest("POST", Peticion, bytes.NewBuffer(JsonFormat))

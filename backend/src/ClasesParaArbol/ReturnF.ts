@@ -15,6 +15,7 @@ execute(){
     var T="";
     T+= "return"+" "+this.EXP.execute()
     Traduccion.add(T);
+    T+="\n";
    return T;
 }
 Prueba(){

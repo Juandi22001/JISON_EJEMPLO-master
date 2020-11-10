@@ -25,7 +25,7 @@ traduccion(){
 }
 execute():any{
     var cadenaT=""
-    cadenaT="var"+" ";
+    cadenaT+="var"+" ";
 
     cadenaT+=this.Nombre+" "+"= "+" " ;
     cadenaT+=this.M_I.execute();

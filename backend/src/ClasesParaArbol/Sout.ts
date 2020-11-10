@@ -19,7 +19,8 @@ this.EXP=EXP;
 
 execute(){
   var T ="";
-  T+="console.log("+this.EXP.execute();+");"
+  T+="console.log("+this.EXP.execute()+")"
+  T+=" \n"
 Traduccion.add(T)
 return T;
     

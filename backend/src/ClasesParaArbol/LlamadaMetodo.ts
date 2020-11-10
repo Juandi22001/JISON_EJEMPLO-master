@@ -29,6 +29,7 @@ execute(){
 }
 
   T+=")";
+  T+="\n"
   Traduccion.add(T)  
 }
 

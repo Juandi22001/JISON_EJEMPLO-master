@@ -19,12 +19,14 @@ export class Class extends Node {
   public execute(){
    console.log("siu");
    var cadenaT=""
-   cadenaT+="class "+this.id+"{";
+   cadenaT+="class "+this.id+"{" +"\n";
 
     for(let i = 0 ; i < this.Contenido_Clase.length ; i++){
           cadenaT += this.Contenido_Clase[i].execute();
       }
      cadenaT+="}"
+     cadenaT+=" \n"
+     cadenaT+=" "
 
    
     Traduccion.add(this.cadena);

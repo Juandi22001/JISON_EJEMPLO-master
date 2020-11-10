@@ -23,9 +23,9 @@ traduccion(){
 }
 execute(){
   var   T=""
-  T+="while"+"("+this.Condition.execute()+")"+"{"
+  T+="while"+"("+this.Condition.execute()+")"+"{"+"\n"
 for(let i = 0 ; i < this.Instrucciones.length ; i++){
-  T += this.Instrucciones[i].execute();
+  T +="  "+ this.Instrucciones[i].execute();
 }
 "}"
 Traduccion.add(T)

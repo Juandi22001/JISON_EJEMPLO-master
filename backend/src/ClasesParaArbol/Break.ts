@@ -21,6 +21,8 @@ traduccion(){
 execute(){
    var T =""
    T+="break;"
+   T+=" "
+   T+="\n"
   return T;
 }
 

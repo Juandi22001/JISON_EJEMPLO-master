@@ -19,6 +19,7 @@ execute(){
    var T ="";
 
    T+= this.Id_Solo;
+   
    return T;
     
 }

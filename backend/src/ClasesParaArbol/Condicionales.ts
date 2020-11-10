@@ -26,8 +26,9 @@ execute(){
 
 
   var T="";
-    T+=this.EXP1.execute()+" "+this.Simbolo+this.EXP2.execute();
+    T+=this.EXP1.execute()+" "+this.Simbolo+" "+this.EXP2.execute();
  Traduccion.add(T);
+
  return T;
   
 }

@@ -1,0 +1,131 @@
+Gramatica JS
+
+
+
+EFE=Epsilon
+Start ->   SentenciaClase ListaClases 
+
+ListaClases ->   SentenciaClase ListaClases
+                  | EFE
+
+SentenciaClase -> class "id" {  MenuClase  }
+
+MenuClase-> DeclaracionClase MenuClase
+		|EFE
+DeclaracionClase ->  var id = { ListaInstrucciones  } // NESCESITO VALIDAR QUE SI ES UNA ASIGNACION 
+                     | function id ( Funcion_Parametros
+                     | var Listaids = EXPRESION   ;
+
+EXPRESION->   EX SYMBOL
+SYMBOL ->  ==EX
+	|=EX
+	|&&
+	| ||
+	|> EX
+	|< EX
+	|<= EX
+    |>=EX
+    |!= EX
+    |EFE
+EX-> T E'
+ E'->+ TE'
+ 	|-TE'
+ 	| EFE
+T-> FT'
+T'->*FT'
+ 	| / FT'
+ 	|EFE
+F-> Decimales
+ 	| Cadena
+	 | ID ExpresionMetodo
+ 	| true
+ 	| false
+ 	| Numero
+ 	| caracter
+ 	| !EX
+ 	| (EXPRESION)     
+ExpresionMetodo-> (  LlamadaMetodo
+                   	| EFE
+LlamadaMetodo -> ListaEXPRESIONES )
+                    | )
+
+ListaEXPRESIONES -> EXPRESION ListaEXPRESIONES'
+ListaEXPRESIONES'-> , EXPRESION ListaEXPRESIONES'
+			|EFE        
+ 
+Funcion_Parametros -> id  Parametros ) {ListaInstrucciones}
+
+
+Parametros -> , id Parametros
+	        | EFE 
+
+Listaids-> , id  Listaids
+        |id
+         |EFE
+
+
+ListaInstrucciones -> Instrucciones ListaT
+ListaT -> Instrucciones ListaT
+	|EFE
+
+
+
+Bloque-> {Instrucciones}
+	
+Instrucciones->  IF
+                 WHILE
+		 DOWHILE
+                 IMPRIMIR
+                 FOR 
+                 RETURN_M
+                 RETURN_F
+                 BREAK
+		 CONTINUE
+                 ASIGNACION
+                DECLARACION ADENTRO
+DECLARACION ADENTRO-> var Listaids = EXPRESION
+ASIGNACION -> Listaids  ASIGNACION'
+
+ASIGNACION '-> = EXPRESION;
+             | (LlamadaMetodo
+                
+
+
+CONTINUE-> Continue;
+
+
+BREAK -→  Break;
+
+
+
+
+
+RETURN_F->  return EXPRESION;
+
+RETURN_M ->  return;
+FOR -> for ( Dec_For ; EXPRESION ; id Incremento_Decremento) Bloque
+
+Incremento_Decremento -> ++ | --
+
+Dec_For-> id = EXPRESION
+IMPRIMIR-> console . log (EXPRESION) ;
+
+
+DOWHILE-> do Block WHILE (Condiciones);
+WHILE-> while (Condiciones)Bloque
+
+
+IF-> if ( Condiciones)Bloque  ELSE
+
+
+ELSE-> else  IFS
+	|EPSILON
+
+
+IFS  -> Bloque //EN PROGRA SE ARREGLA SI SE VA PARA ELSE IF 	
+       |IF
+
+
+
+Condiciones -> EXPRESION  Condiciones'
+Condiciones ->&& EXPRESION  Condiciones' | || Condiciones' | EFE

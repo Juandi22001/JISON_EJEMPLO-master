@@ -71,9 +71,15 @@ caracter (\'[^☼]\')
 ":"                    {$$= new Token(":","dos puntos ", yylloc.first_column,yylloc.first_line); return ':' }
 "/"                {$$= new Token("/","barra ", yylloc.first_column,yylloc.first_line); return '/' }
 ";"                  {$$= new Token(";","punto y coma ", yylloc.first_column,yylloc.first_line); return ';' }
+
+"-="                   {$$= new Token("-=","menos igual ", yylloc.first_column,yylloc.first_line); return '-=' }
+
 "--"                   {$$= new Token("--","decremento ", yylloc.first_column,yylloc.first_line); return 'decremento' }
 "-"                   {$$= new Token("-","menos", yylloc.first_column,yylloc.first_line); return '-' }
 "++"                {$$= new Token("++","plus plus ", yylloc.first_column,yylloc.first_line); return 'incremento' }
+
+"+="                   {$$= new Token("+=","mas igual ", yylloc.first_column,yylloc.first_line); return '+=' }
+
 "+"                 {$$= new Token("+","mas  ", yylloc.first_column,yylloc.first_line); return '+' }
 "*"                   {$$= new Token("*","asterisco ", yylloc.first_column,yylloc.first_line); return '*' }
 "^"                    {$$= new Token("^","elevado ", yylloc.first_column,yylloc.first_line); return '^' }
@@ -243,9 +249,21 @@ DeclaracionClase: 'public' 'void' 'id' '(' Metodos_Funciones {$$ =new Metodo_C(t
 
                           ; 
 
-DECLARACION:'public' TIPO L_ids AsignacionV_P {$$ =new DeclaracionAfuera(this._$.first_line,this._$.first_column,$1,$2,$3,$4);};
+DECLARACION:'public' TIPO  ListaDeclaracion ';' {$$ =new DeclaracionAfuera(this._$.first_line,this._$.first_column,$2);};
+
+DECLARACION2: TIPO ListaDeclaracion ';' {$$ =new DeclaracionAfuera(this._$.first_line,this._$.first_column,$2);};
 
 
+ListaDeclaracion :ListaDeclaracion ','  AsignacionV_P {$1.push($3); $$=$1}
+ | AsignacionV_P {$$=$1};
+
+ 
+AsignacionV_P:'id' '=' EXPRESION  {$$= new Asignacion(this._$.first_line,this._$.first_column,$1,$3);} 
+          |'id'  {$$= new Asignacion(this._$.first_line,this._$.first_column,$1,null);} 
+          |'id' 'incremento'  {$$= new Asignacion(this._$.first_line,this._$.first_column,$1,$2);} 
+          |'id' 'decremento' {$$= new Asignacion(this._$.first_line,this._$.first_column,$1,$2);} 
+          
+          ;
 Metodos_Funciones:   Parametros_Tipo  ')' BlockInstrucciones      {$$= new Metodo_Fc(this._$.first_line,this._$.first_column,$1,$3);}                              
                      | Parametros_Tipo ')' ';'
                      |')' BlockInstrucciones     {$$ =new Metodo_Fc(this._$.first_line,this._$.first_column,null,$2);} 
@@ -269,7 +287,7 @@ INSTRUCCION : SOUT     {$$ = $1;}
                                     |EXPRESION_METODO{$$=$1}
 
             | AsignacionV_P_SIMPLE     {$$ = $1;}
-            | DeclaracionM_Funciones {$$ = $1;}
+            | DECLARACION2 {$$ = $1;}
             | CONTINUE {$$ = $1; console.log("continue");}
             | Return_F {$$ = $1;}
             | Return_M{$$ = $1;}
@@ -316,9 +334,9 @@ TipoPrint : 'println' {$$ = $1 ; }
 WHILE : 'while' Condicionales BlockInstrucciones  {$$= new Whiles(this._$.first_line,this._$.first_column,$2,$3);} 
       ;
 
-IF : 'if' Condicionales BlockInstrucciones   {$$ =new Ifs(this._$.first_line,this._$.first_column,$2,$3,[]);} 
-   | 'if' Condicionales BlockInstrucciones  'else' BlockInstrucciones    {$$= new Ifs(this._$.first_line,this._$.first_column,$2,$3,$4);} 
-   | 'if' Condicionales BlockInstrucciones  'else' IF   {$$=new Ifs(this._$.first_line,this._$.first_column,$2,$3,[$4]);} 
+IF : 'if' Condicionales BlockInstrucciones   {$$ =new Ifs(this._$.first_line,this._$.first_column,0,$2,$3,[]);} 
+   | 'if' Condicionales BlockInstrucciones  'else' BlockInstrucciones    {$$= new Ifs(this._$.first_line,this._$.first_column,0,$2,$3,$5);} 
+   | 'if' Condicionales BlockInstrucciones  'else' IF   {$$=new Ifs(this._$.first_line,this._$.first_column,1,$2,$3,[$5]);} 
    ;
 
 
@@ -366,6 +384,8 @@ EXPRESION : '-' EXPRESION %prec UMENOS	   {$$= new Operaciones(this._$.first_lin
 
 
 AsignacionV_P_SIMPLE: 'id' '=' EXPRESION ';'  {$$= new Asignacion(this._$.first_line,this._$.first_column,$1,$3);} 
+                  | 'id' '+=' EXPRESION ';'  {$$= new Asignacion(this._$.first_line,this._$.first_column,$1,$3);}  
+                  |'id' '-=' EXPRESION ';'  {$$= new Asignacion(this._$.first_line,this._$.first_column,$1,$3);} 
                   |'id' '(' Llamar_Metodo_Exp ')' ';'  {$$ =new LlamadaMetodo(this._$.first_line,this._$.first_column,$1,$3);} 
                   |'id' '(' ')' ';'   {$$= new LlamadaMetodo(this._$.first_line,this._$.first_column,$1,[]);} 
                  ;
@@ -394,21 +414,11 @@ L_ids: L_ids ',' 'id'  { $1.push( $3); $$ = $1; }
 
 
 
-AsignacionV_P: '=' EXPRESION ';' {$$ = $2 }
-          | ';' {$$ = null;}
-          |'incremento' ';' {$$ = $1 }
-          |'decremento' ';'{$$ = $1 }
-          
-          ;
-
-
-
-
 
                                                                       
-Parametros_Tipo  :Parametros_Tipo   ','  TIPO 'id'     { $1.push(new Parametro(this._$.first_line , this._$.first_column,$3,$4)); $$ = $1; }
-			   | TIPO 'id'{ $$ = [new Parametro( this._$.first_line , this._$.first_column,$2 , null)]; }
-         | EXPRESION{ $$ = [new Parametro( this._$.first_line , this._$.first_column,"" , $1)]; }
+Parametros_Tipo  :Parametros_Tipo   ','  TIPO 'id'     { $1.push(new Parametro(this._$.first_line , this._$.first_column,$2,$4,$3)); $$ = $1; }
+			   | TIPO 'id'{ $$ = [new Parametro( this._$.first_line , this._$.first_column,"",$2 , null)]; }
+         | EXPRESION{ $$ = [new Parametro( this._$.first_line , this._$.first_column,"",$2 , $1)]; }
          
                         ;
 
@@ -422,7 +432,7 @@ CONTINUE: 'continue' ';'  {$$ = new Continues( $1, this._$.first_line, this._$.f
                   ;
 Return_M: 'return' ';'{$$ = new ReturnM($1, this._$.first_line , this._$.first_column);}
                         ;
-Return_F: 'return' EXPRESION ';' {$$ = new ReturnF( this._$.first_line , this._$.first_column,$2);}
+Return_F: 'return' EXPRESION ';' {$$ = new ReturnF( this._$.first_line , this._$.first_column,$2); console.log("return F")}
                          ;
 BREAK: 'break' ';' {$$=new Break(this._$.first_line,this._$.first_column,$1);}
                          ; 

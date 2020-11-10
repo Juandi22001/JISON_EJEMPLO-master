@@ -10,10 +10,14 @@ super(linea,columna);
 this.Nombre=Nombre;
 }
 execute(){
-this.cadena+="continue ;";
+
+var T ="";
+T+="continue ";
 
 Traduccion.add(this.cadena) 
-return this.cadena;   
+T+="\n"
+
+return T;   
 }
 Prueba(){
 

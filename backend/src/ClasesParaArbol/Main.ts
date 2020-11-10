@@ -23,7 +23,7 @@ this.Contenido=Contenido;
 execute(){
 
     var T =""
-    T+="main()"+"{";
+    T+="main()"+"{"+" \n";
        
     for(let i = 0 ; i < this.Contenido.length ; i++){
         T += this.Contenido[i].execute();

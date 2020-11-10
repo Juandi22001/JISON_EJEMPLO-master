@@ -14,7 +14,8 @@
    
    const {Asignacion}=require('../ClasesParaArbol/Asignacion')
    const {Do_While}=require('../ClasesParaArbol/Do_While')
-  
+    const {Comentarios}=require('../ClasesParaArbol/Comentarios')
+ 
    const {Increment_Decrements}=require('../ClasesParaArbol/Increment_Decrement')
    const {Sout}=require('../ClasesParaArbol/Sout')
    const {Whiles}=require('../ClasesParaArbol/While')
@@ -58,20 +59,24 @@ caracter (\'[^☼]\')
 %%
 \s+ // cualquier cosa xd
              
-"/""/".*                             //efe
-[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/] //efe
+"/""/".*                      {$$= new Token(yytext,"comentario de Linea ", yylloc.first_column,yylloc.first_line); return 'ComentarioLinea' }
+[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]  {$$= new Token(yytext,"comentarioMulti ", yylloc.first_column,yylloc.first_line); return 'ComentarioMulti' }
+
 
 
 {caracter}         {$$= new Token(yytext,"char ", yylloc.first_column,yylloc.first_line); return 'caracter' }
-
+{stringliteral}      {$$= new Token(yytext,"cadena ", yylloc.first_column,yylloc.first_line); return 'cadena' }
 {decimal}             {$$= new Token(yytext,"decimal ", yylloc.first_column,yylloc.first_line); return 'decimal' }
 {entero}           {$$= new Token(yytext,"entero ", yylloc.first_column,yylloc.first_line); return 'entero' }
 ":"                    {$$= new Token(":","dos puntos ", yylloc.first_column,yylloc.first_line); return ':' }
 "/"                {$$= new Token("/","barra ", yylloc.first_column,yylloc.first_line); return '/' }
 ";"                  {$$= new Token(";","punto y coma ", yylloc.first_column,yylloc.first_line); return ';' }
 "--"                   {$$= new Token("--","decremento ", yylloc.first_column,yylloc.first_line); return 'decremento' }
+"-="                   {$$= new Token("-=","MENOR IGUAL ", yylloc.first_column,yylloc.first_line); return '-=' }
+
 "-"                   {$$= new Token("-","menos", yylloc.first_column,yylloc.first_line); return '-' }
 "++"                {$$= new Token("++","plus plus ", yylloc.first_column,yylloc.first_line); return 'incremento' }
+"+="                 {$$= new Token("+=","mAS IGUAL  ", yylloc.first_column,yylloc.first_line); return '+=' }
 "+"                 {$$= new Token("+","mas  ", yylloc.first_column,yylloc.first_line); return '+' }
 "*"                   {$$= new Token("*","asterisco ", yylloc.first_column,yylloc.first_line); return '*' }
 "^"                    {$$= new Token("^","elevado ", yylloc.first_column,yylloc.first_line); return '^' }
@@ -80,7 +85,7 @@ caracter (\'[^☼]\')
 "<="                   {$$= new Token("<=","menor igual ", yylloc.first_column,yylloc.first_line); return '<=' }
 ">="                 {$$= new Token(">=","mayor igual ", yylloc.first_column,yylloc.first_line); return '>=' }
 "<"                    {$$= new Token("<","menor ", yylloc.first_column,yylloc.first_line); return '<' }
-">"                  {$$= new Token(">","mayor ", yylloc.first_column,yylloc.first_line); return ' >' }
+">"                  {$$= new Token(">","mayor ", yylloc.first_column,yylloc.first_line); return '>' }
 "=="                   {$$= new Token("==","doble igual ", yylloc.first_column,yylloc.first_line); return '==' }
 "!="                   {$$= new Token("!=","diferente ", yylloc.first_column,yylloc.first_line); return '!=' }
 
@@ -95,6 +100,11 @@ caracter (\'[^☼]\')
 "("                    {$$= new Token("(" , "parentesis abierto", yylloc.first_column,yylloc.first_line); return '(' }
 
 ")"                     {$$= new Token(")","parentesis cerrado", yylloc.first_column,yylloc.first_line); return ')' }
+
+"["                    {$$= new Token("[" , "CORCHETE abierto", yylloc.first_column,yylloc.first_line); return '[' }
+
+"]"                     {$$= new Token("]","Corchete cerrado", yylloc.first_column,yylloc.first_line); return ']' }
+
 "{"                     {$$= new Token("{","Llave abierta", yylloc.first_column,yylloc.first_line); return '{' }
 "}"                     {$$= new Token("}",  "llave cerrada", yylloc.first_column,yylloc.first_line); return '}' }
 "public"                {$$= new Token("public","palabra reservada public", yylloc.first_column,yylloc.first_line); return 'public' }
@@ -153,27 +163,30 @@ caracter (\'[^☼]\')
 
 
 
-INICIO :ComienzoA  EOF 
+INICIO :ComienzoA  EOF {return $$}
          | 
        ;
-ComienzoA: ComienzoA InstruccionesA   
+ComienzoA: ComienzoA InstruccionesA     
                   | InstruccionesA 
 ;
 InstruccionesA : SentenciaClase
-       |   SentenciaInterface   
+       |   SentenciaInterface  
+        |COMENTARIOS 
        | EOF 
        ;
 
-
+COMENTARIOS:'ComentarioLinea' 
+|'ComentarioMulti' 
+;
 ListaInterfaces: ListaInterfaces SentenciaInterface  
                  | SentenciaInterface   
 ;
 
-SentenciaInterface:'public' 'interface' 'id' InicioInterface  
+SentenciaInterface:'public' 'interface' 'id' InicioInterface  {$$ =new Interface(this._$.first_line,this._$.first_column,$2,$3);}
                 ;
 
-InicioInterface : '{' InterfaceMenu '}'             
-                               
+InicioInterface : '{' InterfaceMenu '}'  {$$ = $2;}           
+                               | '{' '}' 
                                 ;
 
 InterfaceMenu: InterfaceMenu DeclaracionInterface   
@@ -185,17 +198,18 @@ InterfaceMenu: InterfaceMenu DeclaracionInterface
 
 DeclaracionInterface:   'public' TIPO 'id' '(' Metodos_FuncionesI   
                         |  TIPO 'id' '(' Metodos_FuncionesI 
-                        ; 
+                        |'public' 'void' 'id' '(' Metodos_FuncionesI 
+                        |COMENTARIOS ;
 
-Metodos_FuncionesI: Parametros_Tipo ')' ';'                                   
-                     |')' ';'       
+Metodos_FuncionesI: Parametros_Tipo ')' ';'                                 
+                     |')' ';'         
                      ;     
 
 
 
 
 ListaClases: ListaClases SentenciaClase 
-            | SentenciaClase 
+            | SentenciaClase  
             ;
 
 
@@ -206,7 +220,7 @@ SentenciaClase:'public' 'class' 'id' InicioClase
                
 
 
-InicioClase : '{' MenuClase '}'           
+InicioClase : '{' MenuClase '}'          
                                | '{' '}' 
                             ;
 
@@ -218,55 +232,88 @@ MenuClase: MenuClase DeclaracionClase
 
 DeclaracionClase: 'public' 'void' 'id' '(' Metodos_Funciones 
                         | 'void' 'id' '(' Metodos_Funciones  
-                       | 'public' TIPO 'id' '(' Metodos_Funciones
+                       | 'public' TIPO 'id' '(' Metodos_Funciones   
                          |  TIPO 'id' '(' Metodos_Funciones   
-                        | 'public' TIPO L_ids AsignacionV_P claracionAfuera
+                        | DECLARACION 
                         | 'public'  'static' 'void' 'main' '(' 'String' '[' ']'  'args' ')' BlockInstrucciones 
                         | TIPO L_ids AsignacionV_P 
-                   
+                        |EXPRESION_METODO ';'
+                        |COMENTARIOS 
+                        |'id' '=' EXPRESION ';' 
+                        |error{ $$ = new Error("Sintactico","No se esperaba el caracter: "+yytext, this._$.first_column, this._$.first_line);  console.error('Este es un error léxico: ' + yytext + '  en la linea: ' + this.first_line + ', en la columna: ' + this.first_column);}
+  
+                        
+                       
+
                           ; 
 
+DECLARACION:'public' TIPO ListaDeclaracion
+  ;
 
-Metodos_Funciones: Parametros_Tipo  ')' BlockInstrucciones                                
-                     |')' BlockInstrucciones      
+AsignacionV_P:'id' '=' EXPRESION  
+          | 'id '
+          | id 'incremento' 
+          |id 'decremento' 
+          
+          ;
+
+
+ListaDeclaracion :ListaDeclaracion ','  AsignacionV_P | AsignacionV_P ;
+Metodos_Funciones:   Parametros_Tipo  ')' BlockInstrucciones                                    
+                     | Parametros_Tipo ')' ';'
+                     |')' BlockInstrucciones     
+                     |')' ';'      
+                    
+
                      ;                
 
 
 
 Instrucciones : Instrucciones INSTRUCCION 
-              | INSTRUCCION               
+              | INSTRUCCION  
+              |error   { $$ = new Error("Sintactico","No se esperaba el caracter: "+yytext, this._$.first_column, this._$.first_line);  console.error('Este es un error sintactico: ' + yytext + '  en la linea: ' + this.first_line + ', en la columna: ' +this.first_column);}
+  
+                                   
                 ;
 
-INSTRUCCION : SOUT    
-            | WHILE               
-            | IF                  
-                     | DOWHILE             
+INSTRUCCION : SOUT     
+            |COMENTARIOS 
+            | WHILE                
+            | IF                   
+            | DOWHILE              
             | FOR       
-            | AsignacionV_P_SIMPLE     
-            | DeclaracionM_Funciones 
+            |EXPRESION_METODO
+
+            | AsignacionV_P_SIMPLE   
+            | DECLARACION
             | CONTINUE 
             | Return_F 
             | Return_M
             | BREAK 
+            |Increment_Decrement2 
+         
             ;
 TIPO : 'int'  
      | 'String' 
      | 'boolean'
      | 'double' 
-     | 'char'
-     ;
+     | 'char' ;
 
 
 FOR:'for' '(' Declaracion_f ';' EXPRESION ';' Increment_Decrement ')' BlockInstrucciones   
              ;
-
 Declaracion_f: TIPO 'id' '=' EXPRESION   
        | 'id' '=' EXPRESION  
+       | TIPO 'id'  
+       | id
        ;
 Increment_Decrement: 'id' 'incremento'   
-           | 'id' 'decremento'   
+           | 'id' 'decremento'    
            ;
 
+Increment_Decrement2: 'id' 'incremento'  ';'  
+           | 'id' 'decremento'   ';'   
+           ;
 
 DOWHILE: 'do' BlockInstrucciones  'while' Condicionales ';' 
        ;
@@ -277,7 +324,7 @@ SOUT: 'System' '.' 'out' '.'  TipoPrint '(' EXPRESION ')' ';'
 
 
 TipoPrint : 'println'  
-	       | 'print' 
+	       | 'print'
               ; 
 
 
@@ -285,8 +332,8 @@ TipoPrint : 'println'
 WHILE : 'while' Condicionales BlockInstrucciones   
       ;
 
-IF : 'if' Condicionales BlockInstrucciones   
-   | 'if' Condicionales BlockInstrucciones  'else' BlockInstrucciones    
+IF : 'if' Condicionales BlockInstrucciones    
+   | 'if' Condicionales BlockInstrucciones  'else' BlockInstrucciones     
    | 'if' Condicionales BlockInstrucciones  'else' IF    
    ;
 
@@ -294,14 +341,19 @@ IF : 'if' Condicionales BlockInstrucciones
 
 Condicionales: '(' EXPRESION ')' 
           ;
-BlockInstrucciones  : '{' Instrucciones '}'             /* este es para que acepte vacios*/
+
+
+
+
+BlockInstrucciones  : '{' Instrucciones '}'               /* este es para que acepte vacios*/
                      | '{' '}'    
                      ;
-      EXPRESION : '-' EXPRESION %prec UMENOS
-          | '!' EXPRESION	             
-          | EXPRESION '+' EXPRESION    
-          | EXPRESION '-' EXPRESION    
-          | EXPRESION '*' EXPRESION    
+      
+EXPRESION : '-' EXPRESION %prec UMENOS	   
+          | '!' EXPRESION	                 
+          | EXPRESION '+' EXPRESION          
+          | EXPRESION '-' EXPRESION          
+          | EXPRESION '*' EXPRESION          
           | EXPRESION '/' EXPRESION	   
           | EXPRESION '%' EXPRESION	   
           | EXPRESION '^' EXPRESION	   
@@ -312,15 +364,16 @@ BlockInstrucciones  : '{' Instrucciones '}'             /* este es para que acep
           | EXPRESION '==' EXPRESION	   
           | EXPRESION '!=' EXPRESION	    
           | EXPRESION '||' EXPRESION	    
-          | EXPRESION '&&' EXPRESION
-           | 'decimal'		          
+          | EXPRESION '&&' EXPRESION	    
+           | 'decimal'		    
           | 'true'				    
           | 'false'				    
-          | STRING_LITERAL			   
-          | EXPRESION_METODO		   
-          | caracter                        
-          | entero                    
-          | '(' EXPRESION ')'		   
+          | 'cadena'			    
+          | EXPRESION_METODO		    
+          | caracter                          
+          | entero                          
+          | '(' EXPRESION ')'		    
+          |Increment_Decrement 
           ;
 
 
@@ -329,8 +382,10 @@ BlockInstrucciones  : '{' Instrucciones '}'             /* este es para que acep
 
 
 AsignacionV_P_SIMPLE: 'id' '=' EXPRESION ';'   
-                  |'id' '(' Llamar_Metodo_Exp ')' ';'  
-                                   |'id' '(' ')' ';'    
+                  | 'id' '+=' EXPRESION ';'    
+                  |'id' '-=' EXPRESION ';'   
+                  |'id' '(' Llamar_Metodo_Exp ')' ';'   
+                  |'id' '(' ')' ';'    
                  ;
 
 
@@ -341,7 +396,7 @@ EXPRESION_METODO: 'id' '(' Llamar_Metodo_Exp ')'
 
 
 Llamar_Metodo_Exp: Llamar_Metodo_Exp ',' EXPRESION  
-                                | EXPRESION
+                                | EXPRESION 
                                 ;
 
 
@@ -350,16 +405,11 @@ DeclaracionM_Funciones: TIPO L_ids AsignacionV_P
                                         ;
 
 
-L_ids: L_ids ',' 'id' 
+L_ids: L_ids ',' 'id'  
          | 'id'  
          ; 
 
 
-
-
-AsignacionV_P: '=' EXPRESION ';' 
-          | ';' 
-          ;
 
 
 
@@ -368,6 +418,8 @@ AsignacionV_P: '=' EXPRESION ';'
                                                                       
 Parametros_Tipo  :Parametros_Tipo   ','  TIPO 'id'     
 			   | TIPO 'id'
+         | EXPRESION
+         
                         ;
 
 
@@ -382,7 +434,7 @@ Return_M: 'return' ';'
                         ;
 Return_F: 'return' EXPRESION ';' 
                          ;
-Break_Ciclo: 'break' ';' 
+BREAK: 'break' ';'
                          ; 
 
 

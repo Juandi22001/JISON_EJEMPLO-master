@@ -23,14 +23,16 @@ traduccion(){
 }
 execute(){
 
-  var T="";
+  var T="    ";
   T+="for" +"("+this.Declaracion.execute()+";";
-  T+=this.EXP22.execute();+";"
-  T+=this.Increment_Decrement.execute()+";";+")"+" {"
+  T+=this.EXP22.execute()+";";
+  T+=this.Increment_Decrement.execute()+";"+")" +"\n"+"{"
   for(let i = 0 ; i < this.Instruccion.length ; i++){
     T += this.Instruccion[i].execute();
   }
   T+="}"
+  T+="\n"
+
   Traduccion.add(T);
   return T;
   

@@ -1,0 +1,59 @@
+Estados:
+
+
+1: Palabras reservadas
+
+2: digitos
+
+
+3: Decimal
+
+
+
+4:  comillas 
+
+
+
+5:   mas mas
+
+
+
+6: menos menos
+
+
+
+7:  doble igual
+
+
+8: menor igual 
+
+
+ 9 : mayor igual
+
+
+
+ 10 . Menu Comentario 
+
+
+ 11 Comentario lINEA
+
+
+
+ 12: Comentario Multi 
+
+
+
+13: Comentario Multi 2
+
+
+
+14:  COnsole . Log 
+
+
+
+15:  OR
+
+
+16: AND
+
+

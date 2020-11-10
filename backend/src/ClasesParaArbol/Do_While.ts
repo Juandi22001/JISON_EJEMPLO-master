@@ -24,13 +24,16 @@ traduccion(){
 }
 execute(){
   var T =""
-  T+="Do" +"{"
+  T+="Do" +"{"+"\n"
+  T+=" "
   for(let i = 0 ; i < this.Instrucction.length ; i++){
+    T+="   "
     T += this.Instrucction[i].execute();
 }
 T+="}"
 T+="while "+"("+this.Condition.execute()+")"+";"
 Traduccion.add(T); 
+T+="\n"
 return T;  
 }
 

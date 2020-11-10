@@ -12,7 +12,7 @@ export class Metodo_Fc extends Node {
 super(linea,columna);
 this.Parametros=Parametros;
 this.Contenido=Contenido;
-
+console.log(this.Parametros)
 }
 
 
@@ -20,21 +20,22 @@ execute(){
  var cadenaT=""
 
  if (this.Parametros!=null){
-   
- cadenaT+="("
+  
+ cadenaT+="(" 
 for(let aux  of this.Parametros){
-  cadenaT += aux.ID;
+  cadenaT += aux.Coma+aux.ID;
 
 }
  cadenaT+=")"
 
  
-}cadenaT+="{"
+}cadenaT+="{"+" \n"
+cadenaT+="  ";
   for(let i = 0 ; i < this.Contenido.length ; i++){
-   cadenaT += this.Contenido[i].execute();
+   cadenaT +=" "+ this.Contenido[i].execute();
   }
  cadenaT+="}";
-  
+  cadenaT+"\n"
   Traduccion.add(cadenaT);
   return cadenaT;
   

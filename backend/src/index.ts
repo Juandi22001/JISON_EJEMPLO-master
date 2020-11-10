@@ -4,6 +4,9 @@ const {Errores} =require( './ManejoErrores/Errores')
 const {Token} =require(  './ManejoErrores/Token');
 import { Traduccion } from './ManejoErrores/Traduccion';
 const analizador_jison = require('./Grammar/GramaticaPrueba');
+
+const analizador_jison2 = require('./Grammar/GramaticaP2');
+
 var alv=""
 var bodyParser = require("body-parser");
 const cors = require('cors');
@@ -34,7 +37,7 @@ fs.appendFile('Reporte.html',Token.aux,(error)=>{
 })
 
 
-app.get('/TraduccionJS', (req, res) => {
+app.get('/', (req, res) => {
    const entrada = req.body.entrada;
 
   
@@ -45,10 +48,16 @@ app.get('/TraduccionJS', (req, res) => {
 
 app.post('/JSS', (req, res) => {
   const entrada = req.body.Cadena;
+
+  Errores.aux="";
+
+
 Traducir="";                                
 aux+=entrada;
 console.log(req)
-    
+Token.aux="";
+
+if (Errores.aux==""){
 const efe= analizador_jison.parse( entrada)
 for(const Traduccion of efe) {
 
@@ -57,8 +66,17 @@ Traducir+=Traduccion.execute();
 }
 const {Traduccion}=require('./ManejoErrores/Traduccion')
 console.log(Traducir)
-
- res.send(aux)
+fs.appendFile('Reporte.html',Token.REPORTE(),(error)=>{
+  if (error){
+    console.log("ee")
+   }else {
+  /*   
+*/
+   
+  
+   }
+})
+ res.send(Traducir)}
 });
 
 

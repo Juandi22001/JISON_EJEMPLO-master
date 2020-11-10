@@ -12,10 +12,12 @@ export class Parametro extends Node {
     Simbolo : String;
     void :String;
     cadena:string;
-constructor ( linea:Number,columna:Number ,ID:String,valor:Node ){
+    Coma:String
+constructor ( linea:Number,columna:Number ,Coma:String,ID:String,valor:Node ){
 super(linea,columna);
 this.valor=valor;
 this.ID=ID;
+this.Coma=Coma
 
 }
 

@@ -14,7 +14,8 @@
    
    const {Asignacion}=require('../ClasesParaArbol/Asignacion')
    const {Do_While}=require('../ClasesParaArbol/Do_While')
-  
+    const {Comentarios}=require('../ClasesParaArbol/Comentarios')
+ 
    const {Increment_Decrements}=require('../ClasesParaArbol/Increment_Decrement')
    const {Sout}=require('../ClasesParaArbol/Sout')
    const {Whiles}=require('../ClasesParaArbol/While')
@@ -58,12 +59,13 @@ caracter (\'[^☼]\')
 %%
 \s+ // cualquier cosa xd
              
-"/""/".*                             //efe
-[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/] //efe
+"/""/".*                      {$$= new Token(yytext,"comentario de Linea ", yylloc.first_column,yylloc.first_line); return 'ComentarioLinea' }
+[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]  {$$= new Token(yytext,"comentarioMulti ", yylloc.first_column,yylloc.first_line); return 'ComentarioMulti' }
+
 
 
 {caracter}         {$$= new Token(yytext,"char ", yylloc.first_column,yylloc.first_line); return 'caracter' }
-
+{stringliteral}      {$$= new Token(yytext,"cadena ", yylloc.first_column,yylloc.first_line); return 'cadena' }
 {decimal}             {$$= new Token(yytext,"decimal ", yylloc.first_column,yylloc.first_line); return 'decimal' }
 {entero}           {$$= new Token(yytext,"entero ", yylloc.first_column,yylloc.first_line); return 'entero' }
 ":"                    {$$= new Token(":","dos puntos ", yylloc.first_column,yylloc.first_line); return ':' }
@@ -80,7 +82,7 @@ caracter (\'[^☼]\')
 "<="                   {$$= new Token("<=","menor igual ", yylloc.first_column,yylloc.first_line); return '<=' }
 ">="                 {$$= new Token(">=","mayor igual ", yylloc.first_column,yylloc.first_line); return '>=' }
 "<"                    {$$= new Token("<","menor ", yylloc.first_column,yylloc.first_line); return '<' }
-">"                  {$$= new Token(">","mayor ", yylloc.first_column,yylloc.first_line); return ' >' }
+">"                  {$$= new Token(">","mayor ", yylloc.first_column,yylloc.first_line); return '>' }
 "=="                   {$$= new Token("==","doble igual ", yylloc.first_column,yylloc.first_line); return '==' }
 "!="                   {$$= new Token("!=","diferente ", yylloc.first_column,yylloc.first_line); return '!=' }
 
@@ -95,6 +97,11 @@ caracter (\'[^☼]\')
 "("                    {$$= new Token("(" , "parentesis abierto", yylloc.first_column,yylloc.first_line); return '(' }
 
 ")"                     {$$= new Token(")","parentesis cerrado", yylloc.first_column,yylloc.first_line); return ')' }
+
+"["                    {$$= new Token("[" , "CORCHETE abierto", yylloc.first_column,yylloc.first_line); return '[' }
+
+"]"                     {$$= new Token("]","Corchete cerrado", yylloc.first_column,yylloc.first_line); return ']' }
+
 "{"                     {$$= new Token("{","Llave abierta", yylloc.first_column,yylloc.first_line); return '{' }
 "}"                     {$$= new Token("}",  "llave cerrada", yylloc.first_column,yylloc.first_line); return '}' }
 "public"                {$$= new Token("public","palabra reservada public", yylloc.first_column,yylloc.first_line); return 'public' }
@@ -156,177 +163,199 @@ caracter (\'[^☼]\')
 INICIO :ComienzoA  EOF {return $$}
          | 
        ;
-ComienzoA: ComienzoA InstruccionesA   {$1.push($2); $$ = $1}  
-                  | InstruccionesA {$$ = [$1]}
+ComienzoA: ComienzoA InstruccionesA     
+                  | InstruccionesA 
 ;
-InstruccionesA : SentenciaClase{$$ = new Arbol($1); $$= $1 ;}
-       |   SentenciaInterface   {$$ = new Arbol($1); $$= $1;}
-       | EOF {$$ = new Arbol($1); }
+InstruccionesA : SentenciaClase
+       |   SentenciaInterface  
+        |COMENTARIOS 
+       | EOF 
        ;
 
-
-ListaInterfaces: ListaInterfaces SentenciaInterface  { $1.push($2); $$ = $1; }
-                 | SentenciaInterface   { $$ = [$1]; }
+COMENTARIOS:'ComentarioLinea' 
+|'ComentarioMulti' 
+;
+ListaInterfaces: ListaInterfaces SentenciaInterface  
+                 | SentenciaInterface   
 ;
 
 SentenciaInterface:'public' 'interface' 'id' InicioInterface  {$$ =new Interface(this._$.first_line,this._$.first_column,$2,$3);}
                 ;
 
 InicioInterface : '{' InterfaceMenu '}'  {$$ = $2;}           
-                               | '{' '}' {$$ = [];}
+                               | '{' '}' 
                                 ;
 
-InterfaceMenu: InterfaceMenu DeclaracionInterface   { $1.push($2); $$ = $1; }
-               | DeclaracionInterface     { $$ = [$1]; } 
+InterfaceMenu: InterfaceMenu DeclaracionInterface   
+               | DeclaracionInterface      
 
                                ;     
 
 
 
-DeclaracionInterface:   'public' TIPO 'id' '(' Metodos_FuncionesI   {$$ =new FunctionInterface(this._$.first_line,this._$.first_column,$1,$2,$3,$4);}
-                        |  TIPO 'id' '(' Metodos_FuncionesI {$$= new FunctionInterface(this._$.first_line,this._$.first_column,"-",$2,$3,$4);}
-                        ; 
+DeclaracionInterface:   'public' TIPO 'id' '(' Metodos_FuncionesI   
+                        |  TIPO 'id' '(' Metodos_FuncionesI 
+                        |'public' 'void' 'id' '(' Metodos_FuncionesI 
+                        |COMENTARIOS ;
 
-Metodos_FuncionesI: Parametros_Tipo ')' ';'          {$$= new Metodo_FuncionIN(this._$.first_line,this._$.first_column,$1);}                         
-                     |')' ';'     {$$= new Metodo_FuncionIN(this._$.first_line,this._$.first_column,[]);}    
+Metodos_FuncionesI: Parametros_Tipo ')' ';'                                 
+                     |')' ';'         
                      ;     
 
 
 
 
-ListaClases: ListaClases SentenciaClase { $1.push($2); $$ = $1; }
-            | SentenciaClase  { $$ = [$1]; }
+ListaClases: ListaClases SentenciaClase 
+            | SentenciaClase  
             ;
 
 
 
                        
-SentenciaClase:'public' 'class' 'id' InicioClase {$$ =new Class(this._$.first_line,this._$.first_column,$2,$4); console.log("en una clase") }
+SentenciaClase:'public' 'class' 'id' InicioClase 
                ;
                
 
 
-InicioClase : '{' MenuClase '}' {$$ = $2;}              /* este es para que acepte vacios*/
-                               | '{' '}' {$$ = [];}
+InicioClase : '{' MenuClase '}'          
+                               | '{' '}' 
                             ;
 
 
-MenuClase: MenuClase DeclaracionClase { $1.push($2); $$ = $1; }
-                               | DeclaracionClase      { $$ = [$1]; }
+MenuClase: MenuClase DeclaracionClase 
+                               | DeclaracionClase      
                                ;
 
 
-DeclaracionClase: 'public' 'void' 'id' '(' Metodos_Funciones {$$ =new Metodo_C(this._$.first_line,this._$.first_column,$1,$2,$3,$4);}
-                        | 'void' 'id' '(' Metodos_Funciones  {$$ =new Metodo_C(this._$.first_line,this._$.first_column,".",$2,$2,$4);}
-                       | 'public' TIPO 'id' '(' Metodos_Funciones   {$$ =new Funcion_C(this._$.first_line,this._$.first_column,$1,$2,$3,$5);}
-                         |  TIPO 'id' '(' Metodos_Funciones  {$$= new Funcion_C(this._$.first_line,this._$.first_column,".",$1,$2,$4);} 
-                        | 'public' TIPO L_ids AsignacionV_P {$$ =new DeclaracionAfuera(this._$.first_line,this._$.first_column,$1,$2,$3,$4);}
-                        | 'public'  'static' 'void' 'main' '(' 'String' '[' ']'  'args' ')' BlockInstrucciones {$$= new Main(this._$.first_line,this._$.first_column,$4,$10);}
-                        | TIPO L_ids AsignacionV_P {$$ =new DeclaracionAfuera(this._$.first_line,this._$.first_column,".",$1,$2,$3);}
-                        |'id' '=' EXPRESION ';'  {$$= new Asignacion(this._$.first_line,this._$.first_column,$1,$3);} 
-                   
+DeclaracionClase: 'public' 'void' 'id' '(' Metodos_Funciones 
+                        | 'void' 'id' '(' Metodos_Funciones  
+                       | 'public' TIPO 'id' '(' Metodos_Funciones   
+                         |  TIPO 'id' '(' Metodos_Funciones   
+                        | DECLARACION {$$=$1}
+                        | 'public'  'static' 'void' 'main' '(' 'String' '[' ']'  'args' ')' BlockInstrucciones 
+                        | TIPO L_ids AsignacionV_P 
+                        |EXPRESION_METODO ';'
+                        |COMENTARIOS 
+                        |'id' '=' EXPRESION ';'   
+                        
+                       
+
                           ; 
 
+DECLARACION:'public' TIPO L_ids AsignacionV_P ;
 
-Metodos_Funciones: Parametros_Tipo  ')' BlockInstrucciones      {$$= new Metodo_Fc(this._$.first_line,this._$.first_column,$1,$3);}                              
-                     |')' BlockInstrucciones     {$$ =new Metodo_Fc(this._$.first_line,this._$.first_column,null,$3);} 
+
+Metodos_Funciones:   Parametros_Tipo  ')' BlockInstrucciones                                    
+                     | Parametros_Tipo ')' ';'
+                     |')' BlockInstrucciones     
+                     |')' ';'      
+                    
+
                      ;                
 
 
 
-Instrucciones : Instrucciones INSTRUCCION { $1.push($2); $$ = $1; }
-              | INSTRUCCION               { $$ = [$1]; }
+Instrucciones : Instrucciones INSTRUCCION 
+              | INSTRUCCION               
                 ;
 
-INSTRUCCION : SOUT     {$$ = $1;}
-            | WHILE                {$$ = $1;}
-            | IF                   {$$ = $1;}
-            | DOWHILE              {$$ = $1;}
-            | FOR       {$$ = $1;}
-            | AsignacionV_P_SIMPLE     {$$ = $1;}
-            | DeclaracionM_Funciones {$$ = $1;}
-            | CONTINUE {$$ = $1; console.log("continue");}
-            | Return_F {$$ = $1;}
-            | Return_M{$$ = $1;}
-            | BREAK {$$ = $1;console.log("break");}
+INSTRUCCION : SOUT     
+            |COMENTARIOS 
+            | WHILE                
+            | IF                   
+            | DOWHILE              
+            | FOR       
+            |EXPRESION_METODO
+
+            | AsignacionV_P_SIMPLE   
+            | DeclaracionM_Funciones 
+            | CONTINUE 
+            | Return_F 
+            | Return_M
+            | BREAK 
+            |Increment_Decrement2 
+         
             ;
-TIPO : 'int'  {$$ = new TipoV($1);}
-     | 'String' {$$ = new TipoV($1);}
-     | 'boolean'{$$ = new TipoV($1);}
-     | 'double' {$$ = new TipoV($1);}
-     | 'char'{$$ = new TipoV($1);}
-     ;
+TIPO : 'int'  
+     | 'String' 
+     | 'boolean'
+     | 'double' 
+     | 'char' ;
 
 
-FOR:'for' '(' Declaracion_f ';' EXPRESION ';' Increment_Decrement ')' BlockInstrucciones  {$$= new For_alv(this._$.first_line,this._$.first_column,$3,$5,$7,$9);} 
+FOR:'for' '(' Declaracion_f ';' EXPRESION ';' Increment_Decrement ')' BlockInstrucciones   
              ;
-
-Declaracion_f: TIPO 'id' '=' EXPRESION  {$$ =new Declaracion_For(this._$.first_line,this._$.first_column,$1,$2,$4);} 
-       | 'id' '=' EXPRESION {$$ =new Asignacion(this._$.first_line,this._$.first_column,$1,$3);} 
+Declaracion_f: TIPO 'id' '=' EXPRESION   
+       | 'id' '=' EXPRESION  
+       | TIPO 'id'  
        ;
-Increment_Decrement: 'id' 'incremento'  {$$ =new Increment_Decrements(this._$.first_line,this._$.first_column,$1,$2);} 
-           | 'id' 'decremento'   {$$ =new Increment_Decrements(this._$.first_line,this._$.first_column,$1,$2);} 
+Increment_Decrement: 'id' 'incremento'   
+           | 'id' 'decremento'    
            ;
 
+Increment_Decrement2: 'id' 'incremento'  ';'  
+           | 'id' 'decremento'   ';'   
+           ;
 
-DOWHILE: 'do' BlockInstrucciones  'while' Condicionales ';'{$$ =new Do_While(this._$.first_line,this._$.first_column,$1,$2,$4);} 
+DOWHILE: 'do' BlockInstrucciones  'while' Condicionales ';' 
        ;
 
-SOUT: 'System' '.' 'out' '.'  TipoPrint '(' EXPRESION ')' ';'{$$= new Sout(this._$.first_line,this._$.first_column,$3,$5);
+SOUT: 'System' '.' 'out' '.'  TipoPrint '(' EXPRESION ')' ';'
 } 
                 ;
 
 
-TipoPrint : 'println' {$$ = $1 ; } 
-	       | 'print' {$$ = $1;}
+TipoPrint : 'println'  
+	       | 'print'
               ; 
 
 
 
-WHILE : 'while' Condicionales BlockInstrucciones  {$$= new Whiles(this._$.first_line,this._$.first_column,$2,$3);} 
+WHILE : 'while' Condicionales BlockInstrucciones   
       ;
 
-IF : 'if' Condicionales BlockInstrucciones   {$$ =new Ifs(this._$.first_line,this._$.first_column,$2,$3,[]);} 
-   | 'if' Condicionales BlockInstrucciones  'else' BlockInstrucciones    {$$= new Ifs(this._$.first_line,this._$.first_column,$2,$3,$4);} 
-   | 'if' Condicionales BlockInstrucciones  'else' IF   {$$=new Ifs(this._$.first_line,this._$.first_column,$2,$3,[$4]);} 
+IF : 'if' Condicionales BlockInstrucciones    
+   | 'if' Condicionales BlockInstrucciones  'else' BlockInstrucciones     
+   | 'if' Condicionales BlockInstrucciones  'else' IF    
    ;
 
 
 
-Condicionales: '(' EXPRESION ')' {$$ = $2;}
+Condicionales: '(' EXPRESION ')' 
           ;
 
 
 
 
-BlockInstrucciones  : '{' Instrucciones '}' {$$ = $2;}              /* este es para que acepte vacios*/
-                     | '{' '}'    {$$ = [];}
+BlockInstrucciones  : '{' Instrucciones '}'               /* este es para que acepte vacios*/
+                     | '{' '}'    
                      ;
       
-EXPRESION : '-' EXPRESION %prec UMENOS	   {$$= new Operaciones(this._$.first_line,this._$.first_column,null,$1,$2);}
-          | '!' EXPRESION	                 {$$ =new Operaciones(this._$.first_line,this._$.first_column,null,$1,$2);}
-          | EXPRESION '+' EXPRESION          {$$ =new Operaciones(this._$.first_line,this._$.first_column,$1,$2,$3);}
-          | EXPRESION '-' EXPRESION          {$$ =new Operaciones(this._$.first_line,this._$.first_column,$1,$2,$3);}
-          | EXPRESION '*' EXPRESION          {$$ =new Operaciones(this._$.first_line,this._$.first_column,$1,$2,$3);}
-          | EXPRESION '/' EXPRESION	   {$$ =new Operaciones(this._$.first_line,this._$.first_column,$1,$2,$3);}
-          | EXPRESION '%' EXPRESION	   {$$= new Operaciones(this._$.first_line,this._$.first_column,$1,$2,$3);}
-          | EXPRESION '^' EXPRESION	   {$$= new Operaciones(this._$.first_line,this._$.first_column,$1,$2,$3);}
-          | EXPRESION '<' EXPRESION	   {$$ =new Condicionales(this._$.first_line,this._$.first_column,$1,$2,$3);}
-          | EXPRESION '>' EXPRESION          {$$ = new Condicionales(this._$.first_line,this._$.first_column,$1,$2,$3);}
-          | EXPRESION '>=' EXPRESION	    {$$= new Condicionales(this._$.first_line,this._$.first_column,$1,$2,$3);}
-          | EXPRESION '<=' EXPRESION	   {$$ =new Condicionales(this._$.first_line,this._$.first_column,$1,$2,$3);  }
-          | EXPRESION '==' EXPRESION	   {$$ =new Condicionales(this._$.first_line,this._$.first_column,$1,$2,$3); }
-          | EXPRESION '!=' EXPRESION	   {$$ =new Condicionales(this._$.first_line,this._$.first_column,$1,$2,$3); } 
-          | EXPRESION '||' EXPRESION	    {$$= new Condicionales(this._$.first_line,this._$.first_column,$1,$2,$3);}
-          | EXPRESION '&&' EXPRESION	    {$$= new Condicionales(this._$.first_line,this._$.first_column,$1,$2,$3);}
-           | 'decimal'		           { $$ = new Dato_Exp(this._$.first_line, this._$.first_column,"Double", Number($1)); }
-          | 'true'				    { $$ = new Dato_Exp( this._$.first_line, this._$.first_column,"Boolean", true); }
-          | 'false'				    {  $$ = new Dato_Exp(this._$.first_line, this._$.first_column,"Boolean", false); }
-          | STRING_LITERAL			    {  $$ = new Dato_Exp(this._$.first_line, this._$.first_column,"String", $1.replace(/\"/g,"")); }
-          | EXPRESION_METODO		    { $$ = $1}
-          | caracter                          { $$ = new Dato_Exp( this._$.first_line, this._$.first_column,"char", $1.replace(/\'/g,"")); }
-          | entero                            { $$ = new Dato_Exp( this._$.first_line, this._$.first_column,"int",Number($1) );console.log("probando un") }
-          | '(' EXPRESION ')'		    { $$ = $2; }
+EXPRESION : '-' EXPRESION %prec UMENOS	   
+          | '!' EXPRESION	                 
+          | EXPRESION '+' EXPRESION          
+          | EXPRESION '-' EXPRESION          
+          | EXPRESION '*' EXPRESION          
+          | EXPRESION '/' EXPRESION	   
+          | EXPRESION '%' EXPRESION	   
+          | EXPRESION '^' EXPRESION	   
+          | EXPRESION '<' EXPRESION	   
+          | EXPRESION '>' EXPRESION      
+          | EXPRESION '>=' EXPRESION	   
+          | EXPRESION '<=' EXPRESION	   
+          | EXPRESION '==' EXPRESION	   
+          | EXPRESION '!=' EXPRESION	    
+          | EXPRESION '||' EXPRESION	    
+          | EXPRESION '&&' EXPRESION	    
+           | 'decimal'		    
+          | 'true'				    
+          | 'false'				    
+          | 'cadena'			    
+          | EXPRESION_METODO		    
+          | caracter                          
+          | entero                          
+          | '(' EXPRESION ')'		    
+          |Increment_Decrement 
           ;
 
 
@@ -334,37 +363,40 @@ EXPRESION : '-' EXPRESION %prec UMENOS	   {$$= new Operaciones(this._$.first_lin
 
 
 
-AsignacionV_P_SIMPLE: 'id' '=' EXPRESION ';'  {$$= new Asignacion(this._$.first_line,this._$.first_column,$1,$3);} 
-                  |'id' '(' Llamar_Metodo_Exp ')' ';'  {$$ =new LlamadaMetodo(this._$.first_line,this._$.first_column,$1,$3);} 
-                  |'id' '(' ')' ';'   {$$= new LlamadaMetodo(this._$.first_line,this._$.first_column,$1,[]);} 
+AsignacionV_P_SIMPLE: 'id' '=' EXPRESION ';'   
+                  |'id' '(' Llamar_Metodo_Exp ')' ';'   
+                  |'id' '(' ')' ';'    
                  ;
 
 
-EXPRESION_METODO: 'id' '(' Llamar_Metodo_Exp ')' {$$= new LlamadaMetodo(this._$.first_line,this._$.first_column,$1,$3);} 
-                | 'id' '(' ')'    {$$= new LlamadaMetodo(this._$.first_line,this._$.first_column,$1,[]);} 
-                | 'id'   {$$ =new Id_Solo(this._$.first_line,this._$.first_column,$1);} 
+EXPRESION_METODO: 'id' '(' Llamar_Metodo_Exp ')'  
+                | 'id' '(' ')'     
+                | 'id'    
                 ;
 
 
-Llamar_Metodo_Exp: Llamar_Metodo_Exp ',' EXPRESION  { $1.push($3); $$ = $1; }
-                                | EXPRESION { $$ = [$1]; }
+Llamar_Metodo_Exp: Llamar_Metodo_Exp ',' EXPRESION  
+                                | EXPRESION 
                                 ;
 
 
 
-DeclaracionM_Funciones: TIPO L_ids AsignacionV_P {$$= new DeclaracionMF(this._$.first_line,this._$.first_column,$1,$2,$3);} 
+DeclaracionM_Funciones: TIPO L_ids AsignacionV_P  
                                         ;
 
 
-L_ids: L_ids ',' 'id'  { $1.push( $3); $$ = $1; }
-         | 'id'  { $$ = [$1]; }
+L_ids: L_ids ',' 'id'  
+         | 'id'  
          ; 
 
 
 
 
-AsignacionV_P: '=' EXPRESION ';' {$$ = $2 }
-          | ';' {$$ = null;}
+AsignacionV_P: '=' EXPRESION ';' 
+          | ';' 
+          |'incremento' ';' 
+          |'decremento' ';'
+          
           ;
 
 
@@ -372,8 +404,10 @@ AsignacionV_P: '=' EXPRESION ';' {$$ = $2 }
 
 
                                                                       
-Parametros_Tipo  :Parametros_Tipo   ','  TIPO 'id'     { $1.push(new Parametro(this._$.first_line , this._$.first_column,$3,$4)); $$ = $1; }
-			   | TIPO 'id'{ $$ = [new Parametro( this._$.first_line , this._$.first_column,$1 , $2)]; }
+Parametros_Tipo  :Parametros_Tipo   ','  TIPO 'id'     
+			   | TIPO 'id'
+         | EXPRESION
+         
                         ;
 
 
@@ -382,13 +416,13 @@ Parametros_Tipo  :Parametros_Tipo   ','  TIPO 'id'     { $1.push(new Parametro(t
 
 
 
-CONTINUE: 'continue' ';'  {$$ = new Continues( $1, this._$.first_line, this._$.first_column);}
+CONTINUE: 'continue' ';'  
                   ;
-Return_M: 'return' ';'{$$ = new ReturnM($1, this._$.first_line , this._$.first_column);}
+Return_M: 'return' ';'
                         ;
-Return_F: 'return' EXPRESION ';' {$$ = new ReturnF($1, this._$.first_line , this._$.first_column);}
+Return_F: 'return' EXPRESION ';' 
                          ;
-Break_Ciclo: 'break' ';' {$$=new Break(this._$.first_line,this._$.first_column,$1);}
+BREAK: 'break' ';'
                          ; 
 
 
