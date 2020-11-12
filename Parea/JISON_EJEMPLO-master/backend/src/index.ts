@@ -91,8 +91,6 @@ app.get('/efe', (req, res) => {
    Traducir=""
 
 });
-// LLAMADA DE EJEMPLO             ACA LLAMAS MAJE LGP :) JAJAJA
-
 
 
 

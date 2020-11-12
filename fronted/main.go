@@ -142,7 +142,7 @@ func TokensJS(w http.ResponseWriter, r *http.Request) {
 			print("Error Leyendo Respuesta: %v", Error)
 
 		}
-            print(string(RespuestaCuerpo))
+            
 		// Enviar Respuesta
 		_, _ = fmt.Fprintf(w, "%s", RespuestaCuerpo)
 		

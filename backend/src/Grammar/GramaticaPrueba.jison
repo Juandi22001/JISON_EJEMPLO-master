@@ -24,6 +24,7 @@
     const {Id_Solo}=require('../ClasesParaArbol/Id_Solo')
     const {ReturnM}=require('../ClasesParaArbol/ReturnM')
   const {ReturnF}=require('../ClasesParaArbol/ReturnF')
+  const {Coma}=require('../ClasesParaArbol/Coma')
   
    const {Condicionales}=require('../ClasesParaArbol/Condicionales') 
    const {Dato_Exp}=require('../ClasesParaArbol/Dato_Exp') 
@@ -240,7 +241,6 @@ DeclaracionClase: 'public' 'void' 'id' '(' Metodos_Funciones {$$ =new Metodo_C(t
                          |  TIPO 'id' '(' Metodos_Funciones  {$$= new Funcion_C(this._$.first_line,this._$.first_column,".",$1,$2,$4);} 
                         | DECLARACION {$$=$1}
                         | 'public'  'static' 'void' 'main' '(' 'String' '[' ']'  'args' ')' BlockInstrucciones {$$= new Main(this._$.first_line,this._$.first_column,$4,$11);}
-                        | TIPO L_ids AsignacionV_P {$$ =new DeclaracionAfuera(this._$.first_line,this._$.first_column,".",$1,$2,$3);}
                         |EXPRESION_METODO ';'{$$=$1}
                         |COMENTARIOS {$$=$1}
                         |'id' '=' EXPRESION ';'  {$$= new Asignacion(this._$.first_line,this._$.first_column,$1,$3);} 
@@ -249,20 +249,22 @@ DeclaracionClase: 'public' 'void' 'id' '(' Metodos_Funciones {$$ =new Metodo_C(t
 
                           ; 
 
-DECLARACION:'public' TIPO  ListaDeclaracion ';' {$$ =new DeclaracionAfuera(this._$.first_line,this._$.first_column,$2);};
+DECLARACION:'public' TIPO  ListaDeclaracion ';' {$$ =new DeclaracionAfuera(this._$.first_line,this._$.first_column,$3);}
+| TIPO  ListaDeclaracion ';' {$$ =new DeclaracionAfuera(this._$.first_line,this._$.first_column,$2);}
+
+;
 
 DECLARACION2: TIPO ListaDeclaracion ';' {$$ =new DeclaracionAfuera(this._$.first_line,this._$.first_column,$2);};
 
 
-ListaDeclaracion :ListaDeclaracion ','  AsignacionV_P {$1.push($3); $$=$1}
- | AsignacionV_P {$$=$1};
+ListaDeclaracion :ListaDeclaracion ','  AsignacionV_P {$1.push($$ =new Coma(this._$.first_line,this._$.first_column,",",$3));$$=$1;}
+ | AsignacionV_P {$$ = [$1];};
 
  
 AsignacionV_P:'id' '=' EXPRESION  {$$= new Asignacion(this._$.first_line,this._$.first_column,$1,$3);} 
           |'id'  {$$= new Asignacion(this._$.first_line,this._$.first_column,$1,null);} 
-          |'id' 'incremento'  {$$= new Asignacion(this._$.first_line,this._$.first_column,$1,$2);} 
-          |'id' 'decremento' {$$= new Asignacion(this._$.first_line,this._$.first_column,$1,$2);} 
-          
+          |Increment_Decrement  {$$= new Asignacion(this._$.first_line,this._$.first_column,"",$1);} 
+                  
           ;
 Metodos_Funciones:   Parametros_Tipo  ')' BlockInstrucciones      {$$= new Metodo_Fc(this._$.first_line,this._$.first_column,$1,$3);}                              
                      | Parametros_Tipo ')' ';'

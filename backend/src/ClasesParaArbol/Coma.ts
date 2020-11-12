@@ -3,17 +3,17 @@ import {Node} from '../Abstract/Node';
 import {Type,types } from './Tipo';
 import { Traduccion } from '../ManejoErrores/Traduccion';
 
-export class Asignacion extends Node {
+export class Coma extends Node {
        Declaracion:Node;
        Tipo: Type;
        EXP:Node;
-       ID:String;
+       Coma:String;
        cadena:string;
        Increment_Decrement :Node;
        Instruccion:Array<Node>;
-  constructor ( linea:Number,columna:Number ,ID:String,EXP:Node ){
+  constructor ( linea:Number,columna:Number ,Coma:String,EXP:Node ){
 super(linea,columna);
-this.ID=ID;
+this.Coma=Coma;
 
 this.EXP=EXP;
 
@@ -24,14 +24,13 @@ traductor(){
 execute(){
   var cadenaT=""
 
-  console.log(this.ID+"---")
-  cadenaT+=this.ID+" "
+  console.log(this.Coma+"---")
+  cadenaT+=this.Coma+" "
   
-  if(this.EXP!=null){
+  
 
-
-    cadenaT+="="+this.EXP.execute()
-  }
+    cadenaT+=this.EXP.execute()
+  
 Traduccion.add(cadenaT);
 cadenaT+=" "
 return cadenaT;  

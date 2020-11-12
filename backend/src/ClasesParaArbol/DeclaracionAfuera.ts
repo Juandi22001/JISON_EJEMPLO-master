@@ -4,19 +4,19 @@ import {Type,types } from './Tipo';
 import { Traduccion } from '../ManejoErrores/Traduccion';
 
 export class DeclaracionAfuera extends Node {
-       Declaracion:Node;
+       Declaracion:null;
        public :String;
        Tipo: Node;
-       EXP:Array <Node>;
+       EXP2:Array<Node>;
        ID:Node;
        
        Increment_Decrement :Node;
        Instruccion:Array<Node>;
-  constructor ( linea:Number,columna:Number ,EXP:Array <Node> ){
+  constructor ( linea:Number,columna:Number ,EXP:Array<Node> ){
 super(linea,columna);
 
-this.EXP=EXP;
-
+this.EXP2=EXP;
+console.log(this.EXP2[0].execute()+"SIIIIIIIIIIIIIIIIIIIIIIIIIII")
 }
 
 Traduccion(){
@@ -26,12 +26,11 @@ Traduccion(){
 public execute(){
   var cadena=""
   cadena+= "var"+" "
-  for(let i=0; i<this.EXP.length;i++){
 
-    cadena+="="
-    cadena+=this.EXP[i].execute();
-}
+for (let index = 0; index < this.EXP2.length; index++) {
+  cadena+= this.EXP2[index].execute();
   
+}
   cadena+="\n"
 
 cadena+=" "
