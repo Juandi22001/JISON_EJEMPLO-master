@@ -6,7 +6,7 @@
 |--|--|
 |  |  |
 
-![enter image description here](https://github.com/Juandi22001/Juandi/blob/master/1.PNG?raw=true)
+![enter image description here](https://github.com/Juandi22001/TestingCompi2/blob/main/1.jpg?raw=true)
 
 
 ### Posteriormente se procede a escribir  el texto 
